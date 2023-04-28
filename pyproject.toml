@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "finances"
+version = "0.1.0"
+description = ""
+authors = ["Michael Moser <michaeldmoser@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+asgiref = "^3.6.0"
+astroid = "^2.14.2"
+dill = "^0.3.6"
+Django = "^4.1.7"
+django-environ = "^0.10.0"
+django-vite = "^2.0.2"
+gunicorn = "^20.1.0"
+isort = "^5.12.0"
+lazy-object-proxy = "^1.9.0"
+mccabe = "^0.7.0"
+platformdirs = "^3.0.0"
+pycodestyle = "^2.10.0"
+sqlparse = "^0.4.3"
+tomlkit = "^0.11.6"
+whitenoise = "^6.4.0"
+wrapt = "^1.15.0"
+
+[tool.poetry.dev-dependencies]
+pyflakes = "^3.0.1"
+pylint = "^2.16.2"
+pylint-django = "^2.5.3"
+pylint-plugin-utils = "^0.7"
+flake8 = "^6.0.0"
+autopep8 = "^2.0.1"
+
+
+[build-system]
+requires = ["poetry-core>=1.4.0"]
+build-backend = "poetry.core.masonry.api"

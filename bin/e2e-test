@@ -1,0 +1,20 @@
+#!/bin/bash
+
+RUN_TYPE=${1:-run}
+
+BIN_DIR=$(dirname `readlink -f "${BASH_SOURCE:-$0}"`)
+PROJECT_DIR="${BIN_DIR}/../"
+
+trap cleanup EXIT
+cleanup() {
+  kill -TERM $DEV_PID
+}
+
+VITE_DEV_PORT=5175 DJANGO_PORT=5174 $BIN_DIR/dev &
+DEV_PID=$!
+
+pushd $PROJECT_DIR
+pnpx cypress $RUN_TYPE --e2e --browser chrome 
+EXIT_STATUS=$?
+
+exit $EXIT_STATUS

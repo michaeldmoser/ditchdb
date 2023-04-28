@@ -1,0 +1,16 @@
+{% load django_vite %} {% load react_refresh %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% vite_react_refresh %}
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/static/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    {% vite_hmr_client %}
+  </head>
+  <body>
+    <div id="root"></div>
+    {% vite_asset 'src/main.tsx' %}
+  </body>
+</html>
