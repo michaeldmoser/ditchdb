@@ -11,6 +11,7 @@ frontend/node_modules: frontend/package.json frontend/pnpm-lock.yaml
 setup-backend: .backend-setup
 
 .backend-setup: pyproject.toml poetry.lock
+	poetry install
 	touch .backend-setup
 
 poetry.lock:
@@ -21,8 +22,14 @@ setup-e2e: node_modules
 node_modules: package.json pnpm-lock.yaml
 	pnpm install
 
-dev:
+pnpm-lock.yaml:
+	pnpm install
+
+dev: setup frontend/dist
 	poetry run bin/dev
+
+frontend/dist:
+	cd frontend && pnpm build
 
 test-full: test-e2e
 
@@ -33,6 +40,7 @@ cypress:
 	poetry run bin/e2e-test open
 
 clean:
+	rm .backend-setup
 	find . -type f -name *.pyc -delete
 	find . -type d -name __pycache__ -delete
 	rm -rf node_modules

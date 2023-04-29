@@ -328,4 +328,5 @@ cypress/videos/**
 .backend-setup
 
 *.code-workspace
+.pnpm-store
 
