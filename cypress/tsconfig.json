@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "noEmit": true,
-    "isolatedModules": false,
-    "types": ["cypress"]
-  },
-  "include": ["**/*.ts", "**.spec.ts", "**.cy.ts"]
-}

@@ -90,7 +90,7 @@ TEMPLATES = [
             ],
         },
     },
-]
+] 
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
@@ -100,8 +100,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '127.0.0.1',
+        # 'PORT': '<db_port>',
     }
 }
 
@@ -158,4 +162,4 @@ STATICFILES_DIRS = (
 DJANGO_VITE_ASSETS_PATH = os.path.join(BASE_DIR, "../frontend/dist")
 STATIC_ROOT = 'static'
 DJANGO_VITE_DEV_MODE = DJANGO_DEV
-DJANGO_VITE_DEV_SERVER_PORT=env.int('VITE_DEV_PORT', default=5173)
+DJANGO_VITE_DEV_SERVER_PORT = env.int('VITE_DEV_PORT', default=5173)

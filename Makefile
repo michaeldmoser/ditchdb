@@ -17,13 +17,15 @@ setup-backend: .backend-setup
 poetry.lock:
 	poetry install
 
-setup-e2e: node_modules
+setup-e2e: e2e/node_modules 
 
-node_modules: package.json pnpm-lock.yaml
-	pnpm install
+e2e/node_modules: e2e/package.json e2e/pnpm-lock.yaml
+	cd e2e && pnpm install
+	cd e2e && pnpx playwright install --with-deps
 
-pnpm-lock.yaml:
-	pnpm install
+
+e2e/pnpm-lock.yaml:
+	cd e2e && pnpm install
 
 dev: setup frontend/dist
 	poetry run bin/dev
@@ -43,7 +45,7 @@ clean:
 	rm .backend-setup
 	find . -type f -name *.pyc -delete
 	find . -type d -name __pycache__ -delete
-	rm -rf node_modules
+	rm -rf e2e/node_modules
 	rm -rf frontend/node_modules
 
 .PHONY: cypress dev test-e2e test-full

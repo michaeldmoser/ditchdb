@@ -16,7 +16,7 @@ RUN chsh -s /bin/zsh vscode
 
 RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash - && \
   apt-get install -y nodejs
-RUN npm install -g pnpm
+RUN npm install -g pnpm 
 
 RUN set -ex && \
     pip install --upgrade pip && \
