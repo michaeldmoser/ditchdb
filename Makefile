@@ -35,7 +35,7 @@ frontend/dist:
 
 test-full: test-e2e
 
-test-e2e: setup
+test-e2e: setup-e2e
 	poetry run bin/e2e-test run
 
 cypress:
