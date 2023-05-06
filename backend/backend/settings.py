@@ -60,7 +60,9 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django_vite',
-    'react_refresh'
+    'react_refresh',
+    'ditchdb',
+    'mtorion',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +92,7 @@ TEMPLATES = [
             ],
         },
     },
-] 
+]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
