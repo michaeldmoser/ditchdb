@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "finances"
+name = "ditchdb"
 version = "0.1.0"
 description = ""
 authors = ["Michael Moser <michaeldmoser@gmail.com>"]
