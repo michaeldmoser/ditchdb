@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create rest framework view for OhdcProperties model
 from rest_framework import viewsets
-from .serializers import PropertySerializer, ContactsSerializer
-from .models import Property, Contacts
+from .serializers import PropertySerializer, ContactsSerializer, OrganizationsSerializer
+from .models import Property, Contacts, Organizations
 
 
 class OhdcPropertiesViewSet(viewsets.ModelViewSet):
@@ -15,3 +15,8 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
 class ContactsViewSet(viewsets.ModelViewSet):
     queryset = Contacts.objects.all().order_by('last_name', 'first_name')
     serializer_class = ContactsSerializer
+
+
+class OrganizationsViewSet(viewsets.ModelViewSet):
+    queryset = Organizations.objects.all().order_by('name')
+    serializer_class = OrganizationsSerializer

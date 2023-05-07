@@ -1,6 +1,6 @@
 # create OhdcPropertiesSerializer in backend/ditchdb/serializers.py
 from rest_framework import serializers
-from .models import Property, Contacts
+from .models import Property, Contacts, Organizations
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class ContactsSerializer(serializers.ModelSerializer):
         model: Contacts
         fields = ('id', 'first_name', 'last_name', 'email',
                   'phone', 'alternate_phone', 'notes')
+
+
+class OrganizationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model: Organizations
+        fields = ('id', 'name', 'phone', 'notes')
