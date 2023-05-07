@@ -19,7 +19,7 @@ from django.urls import path, re_path, include
 from django.shortcuts import render
 
 from rest_framework import routers
-from ditchdb.views import OhdcPropertiesViewSet
+from ditchdb.views import OhdcPropertiesViewSet, ContactsViewSet
 
 
 def render_react(request):
@@ -29,6 +29,7 @@ def render_react(request):
 
 router = routers.DefaultRouter()
 router.register(r'properties', OhdcPropertiesViewSet)
+router.register(r'contacts', ContactsViewSet)
 
 
 urlpatterns = [
