@@ -166,3 +166,8 @@ DJANGO_VITE_ASSETS_PATH = os.path.join(BASE_DIR, "../frontend/dist")
 STATIC_ROOT = 'static'
 DJANGO_VITE_DEV_MODE = DJANGO_DEV
 DJANGO_VITE_DEV_SERVER_PORT = env.int('VITE_DEV_PORT', default=5173)
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
