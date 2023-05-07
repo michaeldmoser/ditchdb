@@ -48,7 +48,8 @@ class Migration(migrations.Migration):
                 ("address2", models.CharField(blank=True, max_length=64, null=True)),
                 ("address3", models.CharField(blank=True, max_length=64, null=True)),
                 ("country", models.CharField(blank=True, max_length=20, null=True)),
-                ("postalcode", models.CharField(blank=True, max_length=20, null=True)),
+                ("postalcode", models.CharField(
+                    blank=True, max_length=20, null=True)),
                 ("city", models.CharField(blank=True, max_length=40, null=True)),
                 ("state", models.CharField(blank=True, max_length=2, null=True)),
                 ("zip", models.CharField(blank=True, max_length=50, null=True)),
@@ -85,16 +86,19 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name="OhdcProperty",
+            name="Property",
             fields=[
-                ("propertyid", models.IntegerField(primary_key=True, serialize=False)),
+                ("propertyid", models.IntegerField(
+                    primary_key=True, serialize=False)),
                 ("geocode", models.CharField(blank=True, max_length=60, null=True)),
-                ("addr_number", models.CharField(blank=True, max_length=20, null=True)),
+                ("addr_number", models.CharField(
+                    blank=True, max_length=20, null=True)),
                 (
                     "addr_predirectional",
                     models.CharField(blank=True, max_length=5, null=True),
                 ),
-                ("addr_street", models.CharField(blank=True, max_length=64, null=True)),
+                ("addr_street", models.CharField(
+                    blank=True, max_length=64, null=True)),
                 (
                     "addr_roadsuffix",
                     models.CharField(blank=True, max_length=5, null=True),
@@ -121,7 +125,8 @@ class Migration(migrations.Migration):
                         blank=True, decimal_places=6, max_digits=21, null=True
                     ),
                 ),
-                ("propcategory", models.CharField(blank=True, max_length=5, null=True)),
+                ("propcategory", models.CharField(
+                    blank=True, max_length=5, null=True)),
                 (
                     "propsubcategory",
                     models.CharField(blank=True, max_length=20, null=True),
@@ -149,7 +154,8 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("first_name", models.CharField(blank=True, max_length=30, null=True)),
+                ("first_name", models.CharField(
+                    blank=True, max_length=30, null=True)),
                 ("last_name", models.CharField(blank=True, max_length=30, null=True)),
                 ("email", models.CharField(blank=True, max_length=320, null=True)),
                 ("phone", models.CharField(blank=True, max_length=20, null=True)),
