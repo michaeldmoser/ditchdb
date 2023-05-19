@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     git \
     gnupg2 \
     make \
+    less \
+    neovim \
     zsh && \
     rm -rf /var/lib/apt/lists/*
 
