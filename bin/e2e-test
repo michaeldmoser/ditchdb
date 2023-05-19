@@ -10,7 +10,7 @@ cleanup() {
   kill -TERM $DEV_PID
 }
 
-VITE_DEV_PORT=5175 DJANGO_PORT=5174 $BIN_DIR/dev &
+VITE_DEV_PORT=5175 DJANGO_PORT=5174 DATABASE_URL="postgres://postgres:postgres@127.0.0.1/ditchdb_e2e" $BIN_DIR/dev &
 DEV_PID=$!
 
 pushd $TEST_DIR

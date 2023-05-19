@@ -15,10 +15,10 @@ import os
 import environ
 
 # Initialize environment
-environ.Env.read_env()
 env = environ.Env()
+environ.Env.read_env()
 
-DJANGO_DEV = env.bool('DJANGO_DEV', default=True)
+DJANGO_DEV = env.bool('DJANGO_DEV', default=False)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -102,14 +102,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '127.0.0.1',
-        # 'PORT': '<db_port>',
-    }
+    'default': env.db_url("DATABASE_URL", default="postgres://postgres:postgres@db/ditchdb_dev") 
 }
 
 
