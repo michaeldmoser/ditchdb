@@ -8,13 +8,9 @@ setup-frontend: frontend/node_modules
 frontend/node_modules: frontend/package.json frontend/pnpm-lock.yaml
 	cd frontend && pnpm install
 
-setup-backend: .backend-setup
+setup-backend: $${HOME}/.cache/pypoetry/virtualenvs/ditchdb-%
 
-.backend-setup: pyproject.toml poetry.lock
-	poetry install
-	touch .backend-setup
-
-poetry.lock:
+$${HOME}/.cache/pypoetry/virtualenvs/ditchdb-%: pyproject.toml
 	poetry install
 
 setup-e2e: e2e/node_modules 
@@ -22,7 +18,6 @@ setup-e2e: e2e/node_modules
 e2e/node_modules: e2e/package.json e2e/pnpm-lock.yaml
 	cd e2e && pnpm install
 	cd e2e && pnpx playwright install --with-deps
-
 
 e2e/pnpm-lock.yaml:
 	cd e2e && pnpm install
@@ -42,7 +37,9 @@ cypress:
 	poetry run bin/e2e-test open
 
 clean:
-	rm .backend-setup
+	poetry env remove --all
+	poetry cache clear --all -q _default_cache
+	poetry cache clear --all -q PyPI
 	find . -type f -name *.pyc -delete
 	find . -type d -name __pycache__ -delete
 	rm -rf e2e/node_modules

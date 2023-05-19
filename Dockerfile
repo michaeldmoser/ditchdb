@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:3.11-bullseye
+FROM python:3.11-bullseye
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -12,7 +12,13 @@ RUN apt-get update && apt-get install -y \
     zsh && \
     rm -rf /var/lib/apt/lists/*
 
-RUN chsh -s /bin/zsh vscode
+
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.5/zsh-in-docker.sh)" -- \
+    -p git -p ssh-agent -p 'history-substring-search' \
+    -a 'bindkey "\$terminfo[kcuu1]" history-substring-search-up' \
+    -a 'bindkey "\$terminfo[kcud1]" history-substring-search-down'
+  
+RUN chsh -s /bin/zsh
 
 RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash - && \
   apt-get install -y nodejs
