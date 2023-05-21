@@ -16,7 +16,7 @@ services:
     network_mode: service:db
 
     environment:
-      DJANGO_DEV: true
+      DJANGO_DEV: true # DO NOT SET THIS IN PRODUCTION
       DEV_CONTAINER: true
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.

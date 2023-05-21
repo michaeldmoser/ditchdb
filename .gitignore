@@ -330,3 +330,5 @@ cypress/videos/**
 *.code-workspace
 .pnpm-store
 
+
+.vscode/**
