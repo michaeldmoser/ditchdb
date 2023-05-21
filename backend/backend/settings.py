@@ -19,6 +19,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 DJANGO_DEV = env.bool('DJANGO_DEV', default=False)
+CI = env.bool('CI', default=False) 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +45,7 @@ SECRET_KEY = env.str(
     'SECRET_KEY', default='k!6c3%m3babnqhcej(&xvy1r*du#5!t&d5xvjwal682u37*p&b')  # noqa E501
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DJANGO_DEV
+DEBUG = DJANGO_DEV or CI or env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
