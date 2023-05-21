@@ -21,7 +21,6 @@ from django.shortcuts import render
 from rest_framework import routers
 from ditchdb.views import OhdcPropertiesViewSet, ContactsViewSet, OrganizationsViewSet
 
-
 def render_react(request):
     '''Render react index.html'''
     return render(request, "index.html")
@@ -31,7 +30,6 @@ router = routers.DefaultRouter()
 router.register(r'properties', OhdcPropertiesViewSet)
 router.register(r'contacts', ContactsViewSet)
 router.register(r'organizations', OrganizationsViewSet)
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
