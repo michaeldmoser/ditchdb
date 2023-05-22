@@ -1,6 +1,8 @@
 #!/bin/bash
 
 trap shutdown_dev EXIT 
+trap shutdown_dev HUP
+trap shutdown_dev QUIT
 
 DJANGO_RUN_PORT=${DJANGO_PORT:-8000}
 
@@ -16,9 +18,10 @@ python ./manage.py runserver $DJANGO_RUN_PORT &
 BACKEND_PID=$!
 
 shutdown_dev() {
-  kill -TERM $BACKEND_PID
-  kill -TERM $FRONTEND_PID
+  kill $BACKEND_PID
+  kill $FRONTEND_PID
 }
 
 # OSX doesn't support infinity. 68 years should be plenty for our purposes here
-sleep $((2**31-1))
+wait $BACKEND_PID
+wait $FRONTEND_PID

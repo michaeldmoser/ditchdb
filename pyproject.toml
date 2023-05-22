@@ -27,14 +27,15 @@ wrapt = "^1.15.0"
 psycopg = "^3.1.9"
 djangorestframework = "^3.14.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+pytest-bdd = "^6.1.1"
+pytest-playwright = "^0.3.3"
 pyflakes = "^3.0.1"
 pylint = "^2.16.2"
 pylint-django = "^2.5.3"
 pylint-plugin-utils = "^0.7"
 flake8 = "^6.0.0"
 autopep8 = "^2.0.1"
-
 
 [build-system]
 requires = ["poetry-core>=1.4.0"]

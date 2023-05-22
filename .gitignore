@@ -325,10 +325,10 @@ pyrightconfig.json
 
 cypress/videos/**
 
-.backend-setup
+.playwright.installed
+.python.installed
 
 *.code-workspace
 .pnpm-store
-
 
 .vscode/**

@@ -28,4 +28,5 @@ RUN npm install -g pnpm
 
 RUN set -ex && \
     pip install --upgrade pip && \
-    pip install "poetry==1.4.0"
+    pip install "poetry==1.5.0"
+RUN poetry config virtualenvs.create false

@@ -3,18 +3,24 @@
 RUN_TYPE=${1:-run}
 
 BIN_DIR=$(dirname `readlink -f "${BASH_SOURCE:-$0}"`)
-TEST_DIR="${BIN_DIR}/../e2e"
+TEST_DIR="${BIN_DIR}/../testing/e2e"
 
 trap cleanup EXIT
 cleanup() {
-  kill -TERM $DEV_PID
+  echo 'Shutting down e2e test servers'
+  kill $DEV_PID
+  wait $DEV_PID
 }
 
 VITE_DEV_PORT=5175 DJANGO_PORT=5174 DATABASE_URL="postgres://postgres:postgres@127.0.0.1/ditchdb_e2e" $BIN_DIR/dev &
 DEV_PID=$!
 
+while ! curl --silent -I http://localhost:5174; do
+  sleep 0.1
+done
+
 pushd $TEST_DIR
-pnpm test
+pytest
 EXIT_STATUS=$?
 
 exit $EXIT_STATUS
