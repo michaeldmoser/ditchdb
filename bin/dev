@@ -22,6 +22,5 @@ shutdown_dev() {
   kill $FRONTEND_PID
 }
 
-# OSX doesn't support infinity. 68 years should be plenty for our purposes here
 wait $BACKEND_PID
 wait $FRONTEND_PID
