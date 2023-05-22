@@ -20,21 +20,21 @@
   // "customizations": {},
 
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-"remoteUser": "root",
-"customizations": {
-	"vscode": {
-		"extensions": [
-			"alexkrechik.cucumberautocomplete",
-			"GitHub.copilot",
-			"GitHub.copilot-labs",
-			"tamasfe.even-better-toml",
-			"ecmel.vscode-html-css",
-			"ms-vscode.makefile-tools",
-			"esbenp.prettier-vscode",
-			"numso.prettier-standard-vscode",
-			"ms-python.vscode-pylance",
-			"ms-python.python"
-		]
-	}
-}
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "alexkrechik.cucumberautocomplete",
+        "GitHub.copilot",
+        "GitHub.copilot-labs",
+        "tamasfe.even-better-toml",
+        "ecmel.vscode-html-css",
+        "ms-vscode.makefile-tools",
+        "esbenp.prettier-vscode",
+        "numso.prettier-standard-vscode",
+        "ms-python.vscode-pylance",
+        "ms-python.python"
+      ]
+    }
+  }
 }
