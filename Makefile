@@ -15,7 +15,7 @@ setup-python-stack: .python.installed .playwright.installed
 	touch .python.installed
 
 .playwright.installed: .python.installed
-	playwright install
+	playwright install --with-deps
 	touch .playwright.installed
 
 dev: setup frontend/dist
