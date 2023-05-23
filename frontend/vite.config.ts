@@ -22,10 +22,10 @@ export default defineConfig({
     port: PORT,
     strictPort: true,
     origin: `http://localhost:${PORT}`
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
   }
-  // resolve: {
-  //   alias: {
-  //     '@': path.resolve(__dirname, './src')
-  //   }
-  // }
 });
