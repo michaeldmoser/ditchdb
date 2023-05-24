@@ -19,7 +19,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 DJANGO_DEV = env.bool('DJANGO_DEV', default=False)
-CI = env.bool('CI', default=False) 
+CI = env.bool('CI', default=False)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,7 +47,7 @@ SECRET_KEY = env.str(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = DJANGO_DEV or CI or env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'e2e', 'app']
 
 
 # Application definition
@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db_url("DATABASE_URL", default="postgres://postgres:postgres@db/ditchdb_dev") 
+    'default': env.db_url("DATABASE_URL", default="postgres://postgres:postgres@db/ditchdb_dev")
 }
 
 
@@ -160,6 +160,7 @@ DJANGO_VITE_ASSETS_PATH = os.path.join(BASE_DIR, "../frontend/dist")
 STATIC_ROOT = 'static'
 DJANGO_VITE_DEV_MODE = DJANGO_DEV
 DJANGO_VITE_DEV_SERVER_PORT = env.int('VITE_DEV_PORT', default=5173)
+DJANGO_VITE_DEV_SERVER_HOST = env.str('VITE_DEV_HOST', default='localhost')
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

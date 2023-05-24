@@ -1,42 +1,53 @@
 
 all: setup
 
-setup: setup-frontend setup-python-stack 
+setup: setup-frontend install.python 
 
 setup-frontend: frontend/node_modules
 
 frontend/node_modules: frontend/package.json frontend/pnpm-lock.yaml
 	cd frontend && pnpm install
 
-setup-python-stack: .python.installed .playwright.installed
-
-.python.installed: pyproject.toml poetry.lock
+install.python: /tmp/python.installed
+/tmp/python.installed: pyproject.toml poetry.lock
 	poetry install	
-	touch .python.installed
+	touch /tmp/python.installed
 
-.playwright.installed: .python.installed
+install.playwright: install.python /tmp/playwright.installed
+/tmp/playwright.installed:
 	playwright install --with-deps
-	touch .playwright.installed
+	touch /tmp/playwright.installed
 
-dev: setup frontend/dist
+.PHONY: serve.dev
+serve.dev: setup frontend/dist
 	bin/dev
+
+.PHONY: serve.e2e
+serve.e2e: setup 
+	bin/e2e
+
+.PHONY: serve.storybook
+serve.storybook: setup-frontend
+	cd frontend && pnpm run storybook
 
 frontend/dist:
 	cd frontend && pnpm build
 
+.PHONY: test-full
 test-full: test-e2e
 
-test-e2e: setup-python-stack
-	bin/e2e-test run
+.PHONY: test-e2e
+test-e2e: install.playwright 
+	cd testing/e2e && pytest
 
+.PHONY: clean
 clean:
 	poetry env remove --all
 	poetry cache clear --all -q _default_cache
 	poetry cache clear --all -q PyPI
-	rm .python.installed
+	-rm -f /tmp/python.installed
+	-rm -f /tmp/playwright.installed
 	find . -type f -name *.pyc -delete
 	find . -type d -name __pycache__ -delete
-	rm -rf e2e/node_modules
-	rm -rf frontend/node_modules
-
-.PHONY: cypress dev test-e2e test-full
+	-rm -rf e2e/node_modules
+	-rm -rf frontend/node_modules

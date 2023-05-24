@@ -16,11 +16,8 @@ VITE_DEV_PORT=5175 DJANGO_PORT=5174 DATABASE_URL="postgres://postgres:postgres@1
 DEV_PID=$!
 
 while ! curl --silent -I http://localhost:5174; do
-  sleep 0.1
+  sleep 1
+  echo wating for django server to start
 done
 
-pushd $TEST_DIR
-pytest
-EXIT_STATUS=$?
-
-exit $EXIT_STATUS
+wait $DEV_PID # wait for dev server to exit

@@ -14,7 +14,7 @@ pnpm dev &
 FRONTEND_PID=$!
 
 cd $PROJECT_DIR/backend
-python ./manage.py runserver $DJANGO_RUN_PORT &
+python ./manage.py runserver 0.0.0.0:$DJANGO_RUN_PORT &
 BACKEND_PID=$!
 
 shutdown_dev() {
