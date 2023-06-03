@@ -19,14 +19,24 @@ from django.urls import path, re_path, include
 from django.shortcuts import render
 
 from rest_framework import routers
-from ditchdb.views import OhdcPropertiesViewSet, ContactsViewSet, OrganizationsViewSet
+from ditchdb.views import OhdcPropertiesViewSet, \
+    ContactsViewSet, OrganizationsViewSet
+
 
 def render_react(request):
     '''Render react index.html'''
     return render(request, "index.html")
 
 
-router = routers.DefaultRouter()
+class OptionalTrailingSlash(routers.DefaultRouter):
+    """Make trailing slash optional for all routes"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.trailing_slash = "/?"
+
+
+router = OptionalTrailingSlash()
 router.register(r'properties', OhdcPropertiesViewSet)
 router.register(r'contacts', ContactsViewSet)
 router.register(r'organizations', OrganizationsViewSet)
