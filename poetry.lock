@@ -200,6 +200,21 @@ docs = ["furo (>=2021.8.17b43,<2021.9.dev0)", "sphinx (>=3.5.0)", "sphinx-notfou
 testing = ["coverage[toml] (>=5.0a4)", "pytest (>=4.6.11)"]
 
 [[package]]
+name = "django-typomatic"
+version = "2.3.2"
+description = "A simple solution for generating Typescript interfaces from your Django Rest Framework Serializers."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-typomatic-2.3.2.tar.gz", hash = "sha256:43b082715accf9c001998e800d1b72abb76aadb33a8469a29de5c15b71158b45"},
+    {file = "django_typomatic-2.3.2-py3-none-any.whl", hash = "sha256:d3c574b0184bb2c2a496b807495791dcefedc122162fb82be1b2fa007ebcc54e"},
+]
+
+[package.dependencies]
+django = "*"
+djangorestframework = "*"
+
+[[package]]
 name = "django-vite"
 version = "2.0.2"
 description = "Integration of ViteJS in a Django project."
@@ -927,20 +942,19 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.0.2"
+version = "1.26.16"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
-    {file = "urllib3-2.0.2-py3-none-any.whl", hash = "sha256:d055c2f9d38dc53c808f6fdc8eab7360b6fdbbde02340ed25cfbcd817c62469e"},
-    {file = "urllib3-2.0.2.tar.gz", hash = "sha256:61717a1095d7e155cdb737ac7bb2f4324a858a1e2e6466f6d03ff630ca68d3cc"},
+    {file = "urllib3-1.26.16-py2.py3-none-any.whl", hash = "sha256:8d36afa7616d8ab714608411b4a3b13e58f463aee519024578e062e141dce20f"},
+    {file = "urllib3-1.26.16.tar.gz", hash = "sha256:8f135f6502756bde6b2a9b28989df5fbe87c9970cecaa69041edcce7f0589b14"},
 ]
 
 [package.extras]
-brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
-secure = ["certifi", "cryptography (>=1.9)", "idna (>=2.0.0)", "pyopenssl (>=17.1.0)", "urllib3-secure-extra"]
-socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
-zstd = ["zstandard (>=0.18.0)"]
+brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)", "brotlipy (>=0.6.0)"]
+secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)", "urllib3-secure-extra"]
+socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "whitenoise"
@@ -1043,4 +1057,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7b5fc0d89cf1ae162661a6465c7cbdce118b122034d2f4cc213f27c56835fb27"
+content-hash = "f8029d77876f9f3d9d132002220f642d2ead4109999a70d993ea73fe2a2b7f12"

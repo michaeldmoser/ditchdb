@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'react_refresh',
     'ditchdb',
     'mtorion',
+    'django_typomatic',
 ]
 
 MIDDLEWARE = [

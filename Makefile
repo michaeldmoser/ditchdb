@@ -3,7 +3,7 @@ all: setup
 
 setup: setup-frontend install.python 
 
-setup-frontend: frontend/node_modules
+setup-frontend: frontend/node_modules frontend.models
 
 frontend/node_modules: frontend/package.json frontend/pnpm-lock.yaml
 	cd frontend && pnpm install
@@ -17,6 +17,11 @@ install.playwright: install.python /tmp/playwright.installed
 /tmp/playwright.installed:
 	playwright install --with-deps
 	touch /tmp/playwright.installed
+
+frontend.models: frontend/src/types/ditchdb/index.d.ts
+frontend/src/types/ditchdb/index.d.ts:
+	cd backend && python ./manage.py generate_ts --all -t -o ../frontend/src/types/
+	mv frontend/src/types/ditchdb/index.ts frontend/src/types/ditchdb/index.d.ts
 
 .PHONY: serve.dev
 serve.dev: setup frontend/dist
