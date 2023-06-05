@@ -21,7 +21,8 @@ install.playwright: install.python /tmp/playwright.installed
 frontend.models: frontend/src/types/ditchdb/index.d.ts
 frontend/src/types/ditchdb/index.d.ts:
 	cd backend && python ./manage.py generate_ts --all -t -o ../frontend/src/types/
-	mv frontend/src/types/ditchdb/index.ts frontend/src/types/ditchdb/index.d.ts
+	cd frontend/src/types/ditchdb && sed -e 's/^export //' index.ts > index.d.ts
+	rm frontend/src/types/ditchdb/index.ts
 
 .PHONY: serve.dev
 serve.dev: setup frontend/dist
