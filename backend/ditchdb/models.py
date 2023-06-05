@@ -76,7 +76,7 @@ class OhdcPartyname(models.Model):
 
 
 class Property(models.Model):
-    propertyid = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     geocode = models.CharField(max_length=60, blank=True, null=True)
     addr_number = models.CharField(max_length=20, blank=True, null=True)
     addr_predirectional = models.CharField(max_length=5, blank=True, null=True)
