@@ -1,14 +1,9 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+"""Ditchdb models"""
 from django.db import models
 
 
 class Contacts(models.Model):
+    """Model definition for Contacts."""
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
     email = models.CharField(max_length=320, blank=True, null=True)
@@ -17,35 +12,43 @@ class Contacts(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
+        """Model metadata."""
         managed = True
         db_table = 'contacts'
 
 
 class Organizations(models.Model):
+    """Model definition for Organizations."""
     name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
+        """Model metadata."""
         managed = True
         db_table = 'organizations'
 
 # OHDC models
-# The following modes are copies of the Orion models. They are used as a mechanism to compare the Orion data with the OHDC data to identify changes in the Orion data.
+# The following modes are copies of the Orion models. They are used as
+#  a mechanism to compare the Orion data with the OHDC data to identify
+#  changes in the Orion data.
 
 
 class OhdcOwner(models.Model):
+    """Property ownership"""
     propertyid = models.IntegerField()
     partyid = models.IntegerField()
     primaryowner = models.BooleanField(blank=False, null=False, default=False)
 
     class Meta:
+        """Model metadata."""
         managed = False
         db_table = 'ohdc_owner'
         unique_together = (('propertyid', 'partyid'),)
 
 
 class OhdcPartyaddr(models.Model):
+    """Person or organization mailing address."""
     partyid = models.IntegerField()
     defaultaddress = models.BooleanField(
         blank=False, null=False, default=False)
@@ -59,11 +62,13 @@ class OhdcPartyaddr(models.Model):
     zip = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
+        """Model metadata."""
         managed = False
         db_table = 'ohdc_partyaddr'
 
 
 class OhdcPartyname(models.Model):
+    """Person or organization name."""
     partyid = models.IntegerField()
     defaultname = models.BooleanField(blank=False, null=False, default=False)
     fullname = models.CharField(max_length=167, blank=True, null=True)
@@ -71,11 +76,13 @@ class OhdcPartyname(models.Model):
     nametype_desc = models.CharField(max_length=60, blank=True, null=True)
 
     class Meta:
+        """Model metadata."""
         managed = False
         db_table = 'ohdc_partyname'
 
 
 class Property(models.Model):
+    """Model definition for Property."""
     id = models.IntegerField(primary_key=True)
     geocode = models.CharField(max_length=60, blank=True, null=True)
     addr_number = models.CharField(max_length=20, blank=True, null=True)
@@ -99,5 +106,6 @@ class Property(models.Model):
     has_changes = models.BooleanField()
 
     class Meta:
+        """Model metadata."""
         managed = False
         db_table = 'ohdc_property'
