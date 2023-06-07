@@ -103,9 +103,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': env.db_url("DATABASE_URL", default="postgres://postgres:postgres@db/ditchdb_dev")
-}
+DATABASES = {'default': env.db_url(
+    "DATABASE_URL",
+    default="postgres://postgres:postgres@db/ditchdb_dev")}
 
 
 # Password validation
@@ -165,5 +165,4 @@ DJANGO_VITE_DEV_SERVER_HOST = env.str('VITE_DEV_HOST', default='localhost')
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
-}
+    'PAGE_SIZE': 20, }
