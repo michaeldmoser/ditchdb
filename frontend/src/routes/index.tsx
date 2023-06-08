@@ -1,4 +1,4 @@
-import { Outlet, useRoutes } from 'react-router-dom';
+import { Outlet, createBrowserRouter, useRoutes } from 'react-router-dom';
 
 import MainLayout from '@/layouts/main';
 
@@ -12,8 +12,8 @@ const App = () => {
   );
 };
 
-export const AppRoutes = () => {
-  const element = useRoutes([
+export const AppRoutes = createBrowserRouter(
+  [
     {
       path: '/',
       element: <App />,
@@ -24,7 +24,6 @@ export const AppRoutes = () => {
         }
       ]
     }
-  ]);
-
-  return <>{element}</>;
-};
+  ],
+  { basename: '/app' }
+);

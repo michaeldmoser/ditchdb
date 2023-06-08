@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { AppRoutes } from '@/routes';
 import store from '@/stores';
 import { Provider } from 'react-redux';
@@ -10,8 +10,6 @@ const StoreProvider = ({ children }: PropsWithChildren) => (
 
 export const AppProvider = () => (
   <StoreProvider>
-    <Router basename="/app">
-      <AppRoutes />
-    </Router>
+    <RouterProvider router={AppRoutes} />
   </StoreProvider>
 );
