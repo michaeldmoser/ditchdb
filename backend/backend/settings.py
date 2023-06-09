@@ -165,4 +165,6 @@ DJANGO_VITE_DEV_SERVER_HOST = env.str('VITE_DEV_HOST', default='localhost')
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20, }
+    'PAGE_SIZE': 20,
+    'COERCE_DECIMAL_TO_STRING': False,
+}
