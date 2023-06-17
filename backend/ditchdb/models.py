@@ -1,32 +1,7 @@
 """Ditchdb models"""
 from django.db import models
-
-
-class Contacts(models.Model):
-    """Model definition for Contacts."""
-    first_name = models.CharField(max_length=30, blank=True, null=True)
-    last_name = models.CharField(max_length=30, blank=True, null=True)
-    email = models.CharField(max_length=320, blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    alternate_phone = models.CharField(blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-
-    class Meta:
-        """Model metadata."""
-        managed = True
-        db_table = 'contacts'
-
-
-class Organizations(models.Model):
-    """Model definition for Organizations."""
-    name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-
-    class Meta:
-        """Model metadata."""
-        managed = True
-        db_table = 'organizations'
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 # OHDC models
 # The following modes are copies of the Orion models. They are used as
@@ -81,6 +56,39 @@ class OhdcPartyname(models.Model):
         db_table = 'ohdc_partyname'
 
 
+class Owner(models.Model):
+
+    class Meta:
+        abstract = True
+
+
+class Contacts(Owner):
+    """Model definition for Contacts."""
+    first_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30, blank=True, null=True)
+    email = models.CharField(max_length=320, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    alternate_phone = models.CharField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        """Model metadata."""
+        managed = True
+        db_table = 'contacts'
+
+
+class Organizations(Owner):
+    """Model definition for Organizations."""
+    name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        """Model metadata."""
+        managed = True
+        db_table = 'organizations'
+
+
 class Property(models.Model):
     """Model definition for Property."""
     id = models.IntegerField(primary_key=True)
@@ -105,7 +113,29 @@ class Property(models.Model):
         max_length=60, blank=True, null=True)
     has_changes = models.BooleanField()
 
+    contact_owners = models.ManyToManyField(
+        Contacts,
+        related_name='owns',
+        blank=True,
+    )
+
+    organization_owners = models.ManyToManyField(
+        Organizations,
+        related_name='owns',
+        blank=True,
+    )
+
+    @property
+    def owners(self):
+        """Return a list of owners."""
+        owners = []
+        for owner in self.contact_owners.all():
+            owners.append(owner)
+        for owner in self.organization_owners.all():
+            owners.append(owner)
+        return owners
+
     class Meta:
         """Model metadata."""
-        managed = False
+        managed = True
         db_table = 'ohdc_property'
