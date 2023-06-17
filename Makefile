@@ -24,6 +24,10 @@ frontend/src/types/ditchdb/index.d.ts:
 	cd frontend/src/types/ditchdb && sed -e 's/^export //' index.ts > index.d.ts
 	rm frontend/src/types/ditchdb/index.ts
 
+.PHONY: migrate
+migrate: install.python
+	cd backend && python ./manage.py migrate
+
 .PHONY: serve.dev
 serve.dev: setup frontend/dist
 	bin/dev
