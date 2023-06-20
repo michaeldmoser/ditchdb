@@ -1,7 +1,7 @@
 """REST API views for ditchdb app."""
 from rest_framework import viewsets
-from .serializers import PropertySerializer, ContactSerializer, OrganizationSerializer
-from .models import Property, Contacts, Organizations
+from .serializers import PropertySerializer, PeopleSerializer, OrganizationSerializer
+from .models import Property, People, Organizations
 
 
 class OhdcPropertiesViewSet(viewsets.ModelViewSet):
@@ -12,10 +12,10 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
     serializer_class = PropertySerializer
 
 
-class ContactsViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows contacts to be viewed or edited."""
-    queryset = Contacts.objects.all().order_by('last_name', 'first_name')
-    serializer_class = ContactSerializer
+class PeopleViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows people to be viewed or edited."""
+    queryset = People.objects.all().order_by('last_name', 'first_name')
+    serializer_class = PeopleSerializer
 
 
 class OrganizationsViewSet(viewsets.ModelViewSet):
