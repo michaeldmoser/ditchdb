@@ -6,9 +6,7 @@ import List from './list';
 export default function PropertiesRoutes() {
   return (
     <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<List />} />
-      </Route>
+      <Route path="/*" element={<Layout />} />
     </Routes>
   );
 }
