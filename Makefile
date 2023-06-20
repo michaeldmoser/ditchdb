@@ -24,21 +24,6 @@ frontend/src/types/ditchdb/index.d.ts:
 	cd frontend/src/types/ditchdb && sed -e 's/^export //' index.ts > index.d.ts
 	rm frontend/src/types/ditchdb/index.ts
 
-.PHONY: migrate
-migrate: install.python
-	cd backend && python ./manage.py migrate
-
-.PHONY: serve.dev
-serve.dev: setup frontend/dist
-	bin/dev
-
-.PHONY: serve.e2e
-serve.e2e: setup 
-	bin/e2e
-
-.PHONY: serve.storybook
-serve.storybook: setup-frontend
-	cd frontend && pnpm run storybook
 
 frontend/dist:
 	cd frontend && pnpm build
@@ -61,3 +46,25 @@ clean:
 	find . -type d -name __pycache__ -delete
 	-rm -rf e2e/node_modules
 	-rm -rf frontend/node_modules
+
+## Development
+.PHONY: migrate
+migrate: install.python
+	cd backend && python ./manage.py migrate
+
+.PHONY: serve.dev
+serve.dev: setup frontend/dist
+	bin/dev
+
+.PHONY: serve.e2e
+serve.e2e: setup 
+	bin/e2e
+
+.PHONY: serve.storybook
+serve.storybook: setup-frontend
+	cd frontend && pnpm run storybook
+
+.PHONY: makemigrations
+makemigrations: install.python
+	cd backend && python ./manage.py makemigrations
+
