@@ -20,7 +20,7 @@ from django.shortcuts import render
 
 from rest_framework import routers
 from ditchdb.views import OhdcPropertiesViewSet, \
-    ContactsViewSet, OrganizationsViewSet
+    PeopleViewSet, OrganizationsViewSet
 
 
 def render_react(request):
@@ -38,7 +38,7 @@ class OptionalTrailingSlash(routers.DefaultRouter):
 
 router = OptionalTrailingSlash()
 router.register(r'properties', OhdcPropertiesViewSet)
-router.register(r'contacts', ContactsViewSet)
+router.register(r'people', PeopleViewSet)
 router.register(r'organizations', OrganizationsViewSet)
 
 urlpatterns = [

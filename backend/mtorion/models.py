@@ -15,7 +15,7 @@ class OrionOwner(models.Model):
     timestampchange = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orion_owner'
 
 
@@ -34,7 +34,7 @@ class OrionPartyaddr(models.Model):
     zip = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orion_partyaddr'
 
 
@@ -48,7 +48,7 @@ class OrionPartyname(models.Model):
     nametype_desc = models.CharField(max_length=60, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orion_partyname'
 
 
@@ -77,5 +77,5 @@ class OrionProperty(models.Model):
     indistrict = models.BooleanField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orion_property'

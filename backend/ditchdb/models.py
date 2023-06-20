@@ -1,7 +1,5 @@
 """Ditchdb models"""
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 
 # OHDC models
 # The following modes are copies of the Orion models. They are used as
@@ -17,7 +15,7 @@ class OhdcOwner(models.Model):
 
     class Meta:
         """Model metadata."""
-        managed = False
+        managed = True
         db_table = 'ohdc_owner'
         unique_together = (('propertyid', 'partyid'),)
 
@@ -38,7 +36,7 @@ class OhdcPartyaddr(models.Model):
 
     class Meta:
         """Model metadata."""
-        managed = False
+        managed = True
         db_table = 'ohdc_partyaddr'
 
 
@@ -52,18 +50,12 @@ class OhdcPartyname(models.Model):
 
     class Meta:
         """Model metadata."""
-        managed = False
+        managed = True
         db_table = 'ohdc_partyname'
 
 
-class Owner(models.Model):
-
-    class Meta:
-        abstract = True
-
-
-class Contacts(Owner):
-    """Model definition for Contacts."""
+class People(models.Model):
+    """Model definition for People."""
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
     email = models.CharField(max_length=320, blank=True, null=True)
@@ -71,13 +63,18 @@ class Contacts(Owner):
     alternate_phone = models.CharField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    @property
+    def name(self):
+        """Return the contact's name."""
+        return '{} {}'.format(self.first_name, self.last_name)
+
     class Meta:
         """Model metadata."""
         managed = True
-        db_table = 'contacts'
+        db_table = 'people'
 
 
-class Organizations(Owner):
+class Organizations(models.Model):
     """Model definition for Organizations."""
     name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -113,8 +110,8 @@ class Property(models.Model):
         max_length=60, blank=True, null=True)
     has_changes = models.BooleanField()
 
-    contact_owners = models.ManyToManyField(
-        Contacts,
+    people_owners = models.ManyToManyField(
+        People,
         related_name='owns',
         blank=True,
     )
@@ -129,7 +126,7 @@ class Property(models.Model):
     def owners(self):
         """Return a list of owners."""
         owners = []
-        for owner in self.contact_owners.all():
+        for owner in self.people_owners.all():
             owners.append(owner)
         for owner in self.organization_owners.all():
             owners.append(owner)
