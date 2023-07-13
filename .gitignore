@@ -334,3 +334,7 @@ cypress/videos/**
 .vscode/**
 testing/e2e/test-results/**
 *.sql
+
+etl/*.csv
+etl/*.mdf
+etl/*.[zZ][iI][pP]

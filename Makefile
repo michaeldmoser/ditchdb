@@ -24,6 +24,12 @@ frontend/src/types/ditchdb/index.d.ts:
 	cd frontend/src/types/ditchdb && sed -e 's/^export //' index.ts > index.d.ts
 	rm frontend/src/types/ditchdb/index.ts
 
+.env:
+	cp .env.example .env
+	@PASSWORD=$$(openssl rand -base64 32 | tr -d /=+ | cut -c -32) ; \
+    echo "SQL_SERVER_PASSWORD=$$PASSWORD" >> .env ; \
+    echo "DB_PASSWORD=$$PASSWORD" >> .env ; \
+	echo >> .env ;
 
 frontend/dist:
 	cd frontend && pnpm build

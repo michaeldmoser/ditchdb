@@ -9,22 +9,19 @@ services:
     volumes:
       - .:/workspace:cached
 
-    # Overrides default command so things don't shut down after the process ends.
     working_dir: /workspace
     command: sleep infinity
-
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
 
     environment:
       DJANGO_DEV: true # DO NOT SET THIS IN PRODUCTION
       DEV_CONTAINER: true
 
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
-
     ports:
       - '5173:5173'
       - '8000:8000'
+
+    depends_on:
+      - db
 
   db:
     image: postgres:latest
@@ -32,25 +29,42 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: ditchdb_dev
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - '5432:5432'
+      - ${DB_PORT}:${DB_PORT}
 
-    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
-
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    restart: unless-stopped
+  import-orion:
+    build:
+      context: .
+      dockerfile: ./docker/import-orion.Dockerfile
+    restart: 'no'
     volumes:
       - ./:/workspace
     environment:
       ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: Test1234!
+      MSSQL_SA_PASSWORD: ${SQL_SERVER_PASSWORD}
     ports:
       - '1433:1433'
+    depends_on:
+      - db
+    profiles:
+      - etl
+    working_dir: /workspace/etl
+    command: ./import_orion_into_postgres.sh
+
+  data-import:
+    image: qgis/qgis:latest
+    restart: 'no'
+    volumes:
+      - ./:/workspace
+    depends_on:
+      - db
+    profiles:
+      - changes
+    working_dir: /workspace/etl
+    command: ./import_orion_into_postgres.sh
 
 volumes:
   postgres-data:

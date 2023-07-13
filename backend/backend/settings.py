@@ -14,15 +14,18 @@ from pathlib import Path
 import os
 import environ
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Initialize environment
 env = environ.Env()
-environ.Env.read_env()
+environ.Env.read_env(os.path.join(BASE_DIR, '../.env'))
 
 DJANGO_DEV = env.bool('DJANGO_DEV', default=False)
+
 CI = env.bool('CI', default=False)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 LOGGING = {
     'version': 1,
@@ -100,12 +103,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
+# DATABASE
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {'default': env.db_url(
-    "DATABASE_URL",
-    default="postgres://postgres:postgres@db/ditchdb_dev")}
+DB_ENGINE = env.str('DB_ENGINE', default='postgresql')
+DB_NAME = env.str('DB_NAME', default='postgres')
+DB_USER = env.str('DB_USER', default='postgres')
+DB_PASSWORD = env.str('DB_PASSWORD', default='postgres')
+DB_HOST = env.str('DB_HOST', default='localhost')
+DB_PORT = env.str('DB_PORT', default='5432')
+
+database_default = f"{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+DATABASES = {
+    'default': env.db_url(
+        "DATABASE_URL", default=database_default)
+}
 
 
 # Password validation
