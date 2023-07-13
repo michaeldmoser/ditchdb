@@ -5,7 +5,7 @@ setup: setup-frontend install.python
 
 setup-frontend: frontend/node_modules frontend.models
 
-frontend/node_modules: frontend/package.json frontend/pnpm-lock.yaml
+frontend/node_modules: frontend/package.json
 	cd frontend && pnpm install
 
 install.python: /tmp/python.installed
