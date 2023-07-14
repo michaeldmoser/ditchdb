@@ -70,6 +70,10 @@ serve.e2e: setup
 serve.storybook: setup-frontend
 	cd frontend && pnpm run storybook
 
+.PHONY: import.orion
+import.orion: 
+	docker compose run import-orion
+
 .PHONY: makemigrations
 makemigrations: install.python
 	cd backend && python ./manage.py makemigrations
