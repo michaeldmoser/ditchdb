@@ -338,3 +338,6 @@ testing/e2e/test-results/**
 etl/*.csv
 etl/*.mdf
 etl/*.[zZ][iI][pP]
+etl/Boundaries.*
+etl/current/*
+etl/*.ldf
