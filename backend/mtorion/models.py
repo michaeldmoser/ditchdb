@@ -74,7 +74,7 @@ class OrionProperty(models.Model):
     propsubcategory_desc = models.CharField(
         max_length=60, blank=True, null=True)
     taxyear = models.IntegerField()
-    indistrict = models.BooleanField()
+    indistrict = models.BooleanField(blank=False, null=False, default=False)
 
     class Meta:
         managed = True

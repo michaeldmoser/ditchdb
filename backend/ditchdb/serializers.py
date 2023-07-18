@@ -31,7 +31,13 @@ class PropertySerializer(serializers.ModelSerializer):
             'addr_street', 'addr_roadsuffix', 'addr_postdirectional',
             'addr_city', 'addr_state', 'addr_zip', 'addr_unitnumber',
             'addr_unittype', 'proptype', 'totmarket_acres', 'propcategory',
-            'propsubcategory', 'propsubcategory_desc', 'has_changes', 'owners')
+            'propsubcategory', 'propsubcategory_desc', 'has_changes', 'owners', 'ohdc_partyname')
+
+        ohdc_partyname = serializers.SlugRelatedField(
+            many=True,
+            read_only=True,
+            slug_field='partyname',
+        )
 
 
 class PeopleSerializer(serializers.ModelSerializer):
