@@ -29,7 +29,6 @@ class Property(models.Model):
     propsubcategory = models.CharField(max_length=20, blank=True, null=True)
     propsubcategory_desc = models.CharField(
         max_length=60, blank=True, null=True)
-    has_changes = models.BooleanField(default=False)
 
     @property
     def owners(self):
