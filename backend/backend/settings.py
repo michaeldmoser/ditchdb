@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'django_vite',
     'react_refresh',
     'ditchdb',
-    'mtorion',
     'django_typomatic',
 ]
 

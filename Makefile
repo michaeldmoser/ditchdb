@@ -74,6 +74,10 @@ serve.storybook: setup-frontend
 import.orion: 
 	docker compose run import-orion
 
+.PHONY: mark.indistrict
+mark.indistrict: 
+	docker compose run qgis
+
 .PHONY: makemigrations
 makemigrations: install.python
 	cd backend && python ./manage.py makemigrations
