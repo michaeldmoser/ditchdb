@@ -11,5 +11,6 @@ RUN apt-get update && \
         python3-pip \
         python3-django \
         python3-psycopg \
+        python3-django-environ \
         python3-dotenv && \
     apt-get clean

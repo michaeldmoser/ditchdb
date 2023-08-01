@@ -45,6 +45,7 @@ services:
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: ${SQL_SERVER_PASSWORD}
+      CURRENT_YEAR: 2022
     ports:
       - '1433:1433'
     depends_on:
@@ -58,6 +59,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/qgis.Dockerfile
+    environment:
+      PYTHONPATH: /workspace/backend
+      DJANGO_SETTINGS_MODULE: settings
     restart: 'no'
     volumes:
       - ./:/workspace
@@ -66,7 +70,7 @@ services:
     profiles:
       - changes
     working_dir: /workspace/etl
-    command: python3 ./load_project.py
+    command: ./find_changes.sh
 
 volumes:
   postgres-data:

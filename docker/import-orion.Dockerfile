@@ -6,4 +6,5 @@ RUN  apt-get update \
     && apt-get clean
 ENV PATH=/opt/mssql-tools/bin:$PATH
 USER mssql
+EXPOSE 1433
 

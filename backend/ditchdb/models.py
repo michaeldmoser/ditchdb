@@ -33,15 +33,15 @@ class Property(models.Model):
         max_length=60, blank=True, null=True)
     lastupdated = models.DateTimeField(blank=True, null=True)
 
-    @property
-    def owners(self):
-        """Return a list of owners."""
-        owners = []
-        for owner in self.people_owners.all():
-            owners.append(owner)
-        for owner in self.organization_owners.all():
-            owners.append(owner)
-        return owners
+    # @property
+    # def owners(self):
+    #     """Return a list of owners."""
+    #     owners = []
+    #     for owner in self.people_owners.all():
+    #         owners.append(owner)
+    #     for owner in self.organization_owners.all():
+    #         owners.append(owner)
+    #     return owners
 
     class Meta:
         """Model metadata."""
@@ -92,7 +92,7 @@ class Organizations(models.Model):
 
 
 class Party(models.Model):
-    partyid = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
 
     class Meta:
         """Model metadata."""
@@ -100,13 +100,13 @@ class Party(models.Model):
         db_table = 'party'
 
 
-class OhdcPartyaddr(models.Model):
+class Partyaddr(models.Model):
     """Person or organization mailing address."""
-    partyid = models.ForeignKey(
+    party = models.ForeignKey(
         Party,
-        related_name='partyaddr',
+        related_name='addresses',
         on_delete=models.CASCADE,
-        name='partyid',
+        name='party',
         db_column='partyid'
     )
     defaultaddress = models.BooleanField(
@@ -126,13 +126,13 @@ class OhdcPartyaddr(models.Model):
         db_table = 'ohdc_partyaddr'
 
 
-class OhdcPartyname(models.Model):
+class Partyname(models.Model):
     """Person or organization name."""
-    partyid = models.ForeignKey(
+    party = models.ForeignKey(
         Party,
-        related_name='partyname',
+        related_name='names',
         on_delete=models.CASCADE,
-        name='partyid',
+        name='party',
         db_column='partyid'
     )
 
@@ -147,28 +147,29 @@ class OhdcPartyname(models.Model):
         db_table = 'ohdc_partyname'
 
 
-class OhdcOwner(models.Model):
+class Owner(models.Model):
     """Property ownership"""
     property = models.ForeignKey(
         Property,
-        related_name='ohdc_owners',
+        related_name='owners',
         on_delete=models.CASCADE,
         db_column='propertyid'
     )
-    partyid = models.ForeignKey(
+    party = models.ForeignKey(
         Party,
         related_name='owner',
         on_delete=models.CASCADE,
-        name='partyid',
+        name='party',
         db_column='partyid'
     )
     primaryowner = models.BooleanField(blank=False, null=False, default=False)
+    timestampchange = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         """Model metadata."""
         managed = True
         db_table = 'ohdc_owner'
-        unique_together = (('property', 'partyid'),)
+        unique_together = (('property', 'party'),)
 
 
 class Changes(models.Model):
@@ -188,11 +189,10 @@ class Changes(models.Model):
         (ADDRESS_CHANGED, 'Mailing address was changed in orion database'),
     ]
 
-    propertyid = models.ForeignKey(
+    property = models.ForeignKey(
         Property,
         related_name='changes',
         on_delete=models.CASCADE,
-        db_column='propertyid'
     )
 
     change_type = models.CharField(
@@ -209,26 +209,27 @@ class Changes(models.Model):
         db_table = 'changes_queue'
 
 
-class OrionOwner(models.Model):
-    propertyid = models.IntegerField()
-    taxyear = models.IntegerField()
-    partyid = models.IntegerField()
-    percentownership = models.DecimalField(
-        max_digits=15, decimal_places=6, blank=True, null=True)
-    primaryowner = models.TextField()  # This field type is a guess.
-    interesttype = models.CharField(max_length=60, blank=True, null=True)
-    timestampchange = models.DateTimeField(blank=True, null=True)
+class OrionParty(models.Model):
+    id = models.IntegerField(primary_key=True)
 
     class Meta:
+        """Model metadata."""
         managed = True
-        db_table = 'orion_owner'
+        db_table = 'orion_party'
 
 
 class OrionPartyaddr(models.Model):
     partyaddrid = models.IntegerField()
-    partyid = models.IntegerField()
+    party = models.ForeignKey(
+        OrionParty,
+        related_name='addresses',
+        on_delete=models.CASCADE,
+        name='party',
+        db_column='partyid',
+    )
     # This field type is a guess.
-    defaultaddress = models.TextField(blank=True, null=True)
+    defaultaddress = models.BooleanField(
+        blank=False, null=False, default=False)
     address1 = models.CharField(max_length=64, blank=True, null=True)
     address2 = models.CharField(max_length=64, blank=True, null=True)
     address3 = models.CharField(max_length=64, blank=True, null=True)
@@ -245,7 +246,14 @@ class OrionPartyaddr(models.Model):
 
 class OrionPartyname(models.Model):
     partynameid = models.IntegerField()
-    partyid = models.IntegerField()
+    party = models.ForeignKey(
+        OrionParty,
+        related_name='names',
+        on_delete=models.CASCADE,
+        name='party',
+        db_column='partyid',
+    )
+
     # This field type is a guess.
     defaultname = models.TextField(blank=True, null=True)
     fullname = models.CharField(max_length=167, blank=True, null=True)
@@ -265,22 +273,13 @@ class OrionPropertyManager(models.Manager):
     def __init__(self) -> None:
         super().__init__()
 
-    def by_latest_year(self):
-        """Return properties for the latest tax year that are in the district"""
-        return self.in_district().filter(taxyear=self.latest_year)
+    def get_new_properties_queryset(self):
+        """Return new properties"""
+        return self.in_district().exclude(property_id__in=Property.objects.all())
 
     def in_district(self):
         """Return properties in district"""
         return self.get_queryset().filter(indistrict=True)
-
-    @property
-    def latest_year(self):
-        """Return the latest tax year"""
-        if self.__latest_year is None:
-            self.__latest_year = self.get_queryset().aggregate(
-                models.Max('taxyear'))['taxyear__max']
-
-        return self.__latest_year
 
 
 class OrionProperty(models.Model):
@@ -292,6 +291,13 @@ class OrionProperty(models.Model):
         null=True,
         blank=True,
         db_constraint=False,
+    )
+
+    owners = models.ManyToManyField(
+        OrionParty,
+        related_name='properties',
+        through='OrionOwner',
+        through_fields=('property', 'party'),
     )
 
     geocode = models.CharField(max_length=60, blank=True, null=True)
@@ -324,4 +330,35 @@ class OrionProperty(models.Model):
         db_table = 'orion_property'
         indexes = [
             models.Index(fields=['taxyear', 'indistrict']),
+            models.Index(fields=['property', 'taxyear']),
+        ]
+
+
+class OrionOwner(models.Model):
+    party = models.ForeignKey(
+        OrionParty,
+        related_name='owners',
+        on_delete=models.CASCADE,
+        db_column='partyid',
+    )
+    property = models.ForeignKey(
+        OrionProperty,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    propertyid = models.IntegerField()
+    taxyear = models.IntegerField()
+    percentownership = models.DecimalField(
+        max_digits=15, decimal_places=6, blank=True, null=True)
+    primaryowner = models.TextField()  # This field type is a guess.
+    interesttype = models.CharField(max_length=60, blank=True, null=True)
+    timestampchange = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'orion_owner'
+
+        indexes = [
+            models.Index(fields=['propertyid', 'taxyear']),
         ]

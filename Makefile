@@ -82,3 +82,10 @@ mark.indistrict:
 makemigrations: install.python
 	cd backend && python ./manage.py makemigrations
 
+.PHONY: reset
+reset: 
+	docker compose exec dev bash -c 'cd backend && python3 ./manage.py flush --noinput && python3 ./manage.py migrate'
+
+.PHONY: data.reset
+data.reset: reset import.orion mark.indistrict
+

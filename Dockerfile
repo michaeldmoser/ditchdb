@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     make \
     less \
     neovim \
-    zsh && \
+    zsh \
+    libpq5 && \
     rm -rf /var/lib/apt/lists/*
 
 
