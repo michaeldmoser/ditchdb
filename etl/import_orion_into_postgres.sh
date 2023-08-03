@@ -8,7 +8,7 @@ source ../.env
 rm -f *.ldf &> /dev/null
 /opt/mssql/bin/sqlservr &
 
-# wget -q $ORION_SOURCE -O ORION.zip 
+wget -q $ORION_SOURCE -O ORION.zip 
 unzip -o ORION.zip
 
 export SQLCMDPASSWORD=$SQL_SERVER_PASSWORD
