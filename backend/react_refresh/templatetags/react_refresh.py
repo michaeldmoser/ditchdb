@@ -26,7 +26,7 @@ def vite_react_refresh() -> str:
         return ""
 
     return f"""<script type="module">
-      import RefreshRuntime from \
+      import * as RefreshRuntime from \
       '{INSTANCE.generate_vite_asset_url(DJANGO_VITE_REACT_REFRESH_URL)}'
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {{}}
