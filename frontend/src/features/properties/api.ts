@@ -2,45 +2,51 @@
  * @file The api calls for the properties feature.
  */
 
-import api from '@/stores/api';
+import api from "@/stores/api";
 
 const propertiesApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProperties: builder.query<DjangoResponse<Property>, void>({
-      query: () => '/properties/'
+      query: () => "/properties/",
     }),
     getProperty: builder.query({
-      query: (id) => `/properties/${id}`
+      query: (id) => `/properties/${id}`,
     }),
     createProperty: builder.mutation({
       query: (property) => ({
-        url: '/properties',
-        method: 'POST',
-        body: property
-      })
+        url: "/properties",
+        method: "POST",
+        body: property,
+      }),
     }),
     updateProperty: builder.mutation({
       query: ({ id, ...patch }) => ({
         url: `/properties/${id}`,
-        method: 'PATCH',
-        body: patch
-      })
+        method: "PATCH",
+        body: patch,
+      }),
     }),
     deleteProperty: builder.mutation({
       query: (id) => ({
         url: `/properties/${id}`,
-        method: 'DELETE'
-      })
-    })
-  })
+        method: "DELETE",
+      }),
+    }),
+    getPropertyOwners: builder.query({
+      query: (id) => ({
+        url: `/properties/${id}/owners`,
+      }),
+    }),
+  }),
 });
 
-api.enhanceEndpoints({ addTagTypes: ['Properties'] });
+api.enhanceEndpoints({ addTagTypes: ["Properties"] });
 
 export const {
   useGetPropertiesQuery,
   useGetPropertyQuery,
+  useGetPropertyOwnersQuery,
   useCreatePropertyMutation,
   useUpdatePropertyMutation,
-  useDeletePropertyMutation
+  useDeletePropertyMutation,
 } = propertiesApi;

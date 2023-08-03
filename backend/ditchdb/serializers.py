@@ -1,27 +1,10 @@
 """Serializers for the ditchdb app."""
 from rest_framework import serializers
-from .models import Property, People, Organizations
+from .models import Property, People, Organizations, Partyname
 
 
 class PropertySerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
-
-    # owners = serializers.SerializerMethodField()
-    #
-    # def get_owners(self, obj):
-    #     """Return a list of owners whether an organization or an individual."""
-    #     def serialize(model):
-    #         """Set the model type."""
-    #         if isinstance(model, People):
-    #             owner = PeopleSerializer(model).data
-    #             owner['type'] = 'people'
-    #         else:
-    #             owner = OrganizationSerializer(model).data
-    #             owner['type'] = 'organization'
-    #
-    #         return owner
-    #
-    #     return [serialize(owner) for owner in obj.owners]
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
@@ -32,12 +15,6 @@ class PropertySerializer(serializers.ModelSerializer):
             'addr_city', 'addr_state', 'addr_zip', 'addr_unitnumber',
             'addr_unittype', 'proptype', 'totmarket_acres', 'propcategory',
             'propsubcategory', 'propsubcategory_desc')
-
-        # ohdc_partyname = serializers.SlugRelatedField(
-        #     many=True,
-        #     read_only=True,
-        #     slug_field='partyname',
-        # )
 
 
 class PeopleSerializer(serializers.ModelSerializer):
@@ -55,3 +32,10 @@ class OrganizationSerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
         model = Organizations
         fields = ('id', 'name', 'phone', 'notes')
+
+class PartynameSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+        model = Partyname
+        fields = ('id', 'defaultname', 'fullname', 'nametype', 'nametype_desc')
