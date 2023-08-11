@@ -6,7 +6,7 @@ setup: setup-frontend install.python
 setup-frontend: frontend/node_modules frontend.models
 
 frontend/node_modules: frontend/package.json
-	cd frontend && pnpm install
+	cd frontend && npm install
 
 install.python: /tmp/python.installed
 /tmp/python.installed: pyproject.toml poetry.lock
@@ -32,7 +32,7 @@ frontend/src/types/ditchdb/index.d.ts:
 	echo >> .env ;
 
 frontend/dist:
-	cd frontend && pnpm build
+	cd frontend && npm build
 
 .PHONY: test-full
 test-full: test-e2e
@@ -68,7 +68,7 @@ serve.e2e: setup
 
 .PHONY: serve.storybook
 serve.storybook: setup-frontend
-	cd frontend && pnpm run storybook
+	cd frontend && npm run storybook
 
 .PHONY: import.orion
 import.orion: 

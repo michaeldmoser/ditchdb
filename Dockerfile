@@ -23,9 +23,8 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   
 RUN chsh -s /bin/zsh
 
-RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
   apt-get install -y nodejs
-RUN npm install -g pnpm 
 
 RUN set -ex && \
     pip install --upgrade pip && \
