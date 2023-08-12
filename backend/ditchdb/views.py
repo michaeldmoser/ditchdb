@@ -2,7 +2,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .serializers import PropertySerializer, PeopleSerializer, OrganizationSerializer, PartynameSerializer
+from .serializers import PropertySerializer, PeopleSerializer, OrganizationSerializer, PartynameSerializer, PartyaddressSerializer
 from .models import Property, People, Organizations
 
 class OhdcPropertiesViewSet(viewsets.ModelViewSet):
@@ -23,6 +23,17 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
         ]
 
         return Response([PartynameSerializer(owner).data for owner in owners])
+
+    @action(detail=True)
+    def addresses(self, request, pk=None):
+        """Retrieve a list of address for this property"""
+        property = self.get_object()
+        addresses = [
+                address
+                for owner in property.owners.select_related('party').prefetch_related('party__addresses')
+                for address in owner.party.addresses.all()
+                ]
+        return Response([PartyaddressSerializer(address).data for address in addresses])
 
 class PeopleViewSet(viewsets.ModelViewSet):
     """API endpoint that allows people to be viewed or edited."""

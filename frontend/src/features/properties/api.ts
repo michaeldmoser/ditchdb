@@ -37,6 +37,11 @@ const propertiesApi = api.injectEndpoints({
         url: `/properties/${id}/owners`,
       }),
     }),
+    getPropertyAddresses: builder.query({
+      query: (id) => ({
+        url: `/properties/${id}/addresses`,
+      }),
+    }),
   }),
 });
 
@@ -46,6 +51,7 @@ export const {
   useGetPropertiesQuery,
   useGetPropertyQuery,
   useGetPropertyOwnersQuery,
+  useGetPropertyAddressesQuery,
   useCreatePropertyMutation,
   useUpdatePropertyMutation,
   useDeletePropertyMutation,
