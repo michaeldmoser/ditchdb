@@ -1,4 +1,3 @@
-
 all: setup
 
 setup: setup-frontend install.python 
@@ -39,7 +38,7 @@ test-full: test-e2e
 
 .PHONY: test-e2e
 test-e2e: install.playwright 
-	cd testing/e2e && pytest
+	pytest testing/e2e
 
 .PHONY: clean
 clean:
