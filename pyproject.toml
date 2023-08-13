@@ -39,6 +39,9 @@ pylint-plugin-utils = "^0.7"
 flake8 = "^6.0.0"
 autopep8 = "^2.0.1"
 django-typomatic = "^2.3.2"
+factory-boy = "^3.3.0"
+faker = "^19.3.0"
+pytest-django = "^4.5.2"
 
 [build-system]
 requires = ["poetry-core>=1.4.0"]
