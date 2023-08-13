@@ -1,26 +1,41 @@
-#!/bin/bash
+#!/bin/zsh
 
-trap shutdown_dev EXIT 
-trap shutdown_dev HUP
-trap shutdown_dev QUIT
+source ${0:a:h}/setup-dev-shell
 
-DJANGO_RUN_PORT=${DJANGO_PORT:-8000}
+ensure_in_project_root
 
-BIN_DIR=$(dirname `readlink -f "${BASH_SOURCE:-$0}"`)
-PROJECT_DIR="${BIN_DIR}/../"
+full_reset() {
+        source ./.env
+        PGPASSWORD=$DB_PASSWORD psql -h localhost -U postgres << EOF
+        DROP DATABASE ${DB_NAME};
+        CREATE DATABASE ${DB_NAME}
+EOF
 
-cd $PROJECT_DIR/frontend &> /dev/null
-npm run dev &
-FRONTEND_PID=$!
+        rm -rf backend/ditchdb/migrations/0???*.py
 
-cd $PROJECT_DIR/backend
-python ./manage.py runserver 0.0.0.0:$DJANGO_RUN_PORT &
-BACKEND_PID=$!
+        dev makemigrations
+        dev migrate
 
-shutdown_dev() {
-  kill $BACKEND_PID
-  kill $FRONTEND_PID
+        dev import.orion
+        dev mark.indistrict
+
 }
 
-wait $BACKEND_PID
-wait $FRONTEND_PID
+case $1 in
+    pysh)
+        zsh -c "$DOCKER_EXEC_DEV zsh -c 'cd backend && python manage.py shell'"
+        ;;
+
+    term)
+        zsh -c "$DOCKER_EXEC_DEV zsh"
+        ;;
+
+    full.reset)
+        full_reset
+        ;;
+
+    *)
+        zsh -c "$DOCKER_EXEC_DEV make $1"
+        ;;
+esac
+

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+trap shutdown_dev EXIT 
+trap shutdown_dev HUP
+trap shutdown_dev QUIT
+
+DJANGO_RUN_PORT=${DJANGO_PORT:-8000}
+
+BIN_DIR=$(dirname `readlink -f "${BASH_SOURCE:-$0}"`)
+PROJECT_DIR="${BIN_DIR}/../"
+
+cd $PROJECT_DIR/frontend &> /dev/null
+npm run dev &
+FRONTEND_PID=$!
+
+cd $PROJECT_DIR/backend
+python ./manage.py runserver 0.0.0.0:$DJANGO_RUN_PORT &
+BACKEND_PID=$!
+
+shutdown_dev() {
+  kill $BACKEND_PID
+  kill $FRONTEND_PID
+}
+
+wait $BACKEND_PID
+wait $FRONTEND_PID

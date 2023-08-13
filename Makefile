@@ -1,6 +1,6 @@
 all: setup
 
-setup: setup-frontend install.python 
+setup: .env setup-frontend install.python 
 
 setup-frontend: frontend/node_modules frontend.models
 
@@ -33,11 +33,11 @@ frontend/src/types/ditchdb/index.d.ts:
 frontend/dist:
 	cd frontend && npm build
 
-.PHONY: test-full
-test-full: test-e2e
+.PHONY: test.full
+test.full: test.e2e
 
-.PHONY: test-e2e
-test-e2e: install.playwright 
+.PHONY: test.e2e
+test.e2e: install.playwright 
 	pytest testing/e2e
 
 .PHONY: clean
@@ -59,11 +59,11 @@ migrate: install.python
 
 .PHONY: serve.dev
 serve.dev: setup frontend/dist
-	bin/dev
+	bin/start-dev-server
 
 .PHONY: serve.e2e
 serve.e2e: setup 
-	bin/e2e
+	bin/start-e2e-server
 
 .PHONY: serve.storybook
 serve.storybook: setup-frontend
