@@ -17,7 +17,6 @@ FRONTEND_PID=$!
 
 cd $PROJECT_DIR/backend
 
-DJANGO_ENV=$DJANGO_ENV python ./manage.py migrate
 DJANGO_ENV=$DJANGO_ENV python ./manage.py runserver 0.0.0.0:$DJANGO_RUN_PORT &
 BACKEND_PID=$!
 
