@@ -11,3 +11,8 @@ ensure_in_project_root() {
 
     pushd $PROJECT_ROOT_DIR
 }
+
+alias se='serve e2e'
+alias sd='serve dev'
+alias ss='serve storybook'
+
