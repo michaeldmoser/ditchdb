@@ -26,7 +26,7 @@ def _():
 @when('a user navigates to the properties screen')
 def _(page: Page):
     """a user navigates to the properties screen."""
-    page.goto('http://localhost:8000/app/properties/')
+    page.goto('/app/properties/')
 
 
 @then('each property should display the street address and size in acres')
