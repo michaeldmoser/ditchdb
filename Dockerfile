@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y \
     less \
     neovim \
     zsh \
-    libpq5 && \
+    libpq5 \
+    postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 

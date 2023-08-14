@@ -13,7 +13,11 @@ cleanup() {
 }
 
 source $TEST_DIR/.env
-
+echo $DATABASE_URL
+psql $DATABASE_URL << EOF
+    DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+EOF
 DJANGO_ENV=${TEST_DIR}/.env VITE_DEV_PORT=$VITE_DEV_PORT DJANGO_PORT=$DJANGO_PORT $BIN_DIR/start-dev-server &
 DEV_PID=$!
 
@@ -23,4 +27,3 @@ while ! curl --silent -I http://localhost:5174; do
 done
 
 wait $DEV_PID # wait for dev server to exit
-c
