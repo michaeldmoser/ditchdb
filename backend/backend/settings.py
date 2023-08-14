@@ -18,7 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialize environment
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '../.env'))
+ENV_FILE=env('DJANGO_ENV', default=os.path.join(BASE_DIR, '../.env'))
+environ.Env.read_env(ENV_FILE)
 
 DJANGO_DEV = env.bool('DJANGO_DEV', default=False)
 

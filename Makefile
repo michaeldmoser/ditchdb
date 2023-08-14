@@ -30,6 +30,11 @@ frontend/src/types/ditchdb/index.d.ts:
     echo "DB_PASSWORD=$$PASSWORD" >> .env ; \
 	echo >> .env ;
 
+testing/e2e/.env: .env
+	cat .env | sed -e "s/ditchdb_dev/ditchdb_e2e/g" > $@
+	echo "VITE_DEV_PORT=5175" >> $@
+	echo "DJANGO_PORT=5174" >> $@
+
 frontend/dist:
 	cd frontend && npm build
 

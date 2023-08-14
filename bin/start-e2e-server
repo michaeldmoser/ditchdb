@@ -12,7 +12,9 @@ cleanup() {
   wait $DEV_PID
 }
 
-VITE_DEV_PORT=5175 DJANGO_PORT=5174 DATABASE_URL="postgres://postgres:postgres@db/ditchdb_e2e" $BIN_DIR/start-dev-server &
+source $TEST_DIR/.env
+
+DJANGO_ENV=${TEST_DIR}/.env VITE_DEV_PORT=$VITE_DEV_PORT DJANGO_PORT=$DJANGO_PORT $BIN_DIR/start-dev-server &
 DEV_PID=$!
 
 while ! curl --silent -I http://localhost:5174; do
@@ -21,3 +23,4 @@ while ! curl --silent -I http://localhost:5174; do
 done
 
 wait $DEV_PID # wait for dev server to exit
+c
