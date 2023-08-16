@@ -27,7 +27,7 @@ function List() {
         aria-labelledby="properties-title"
         className="bg-neutral text-neutral-content"
       >
-        {data?.results?.map((property: Property, key) => (
+        {data?.results?.map((property: Property, key: any) => (
           <ListItem key={key} property={property} />
         ))}
       </ul>

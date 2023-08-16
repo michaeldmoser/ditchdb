@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import {
   useGetPropertyAddressesQuery,
+  useGetPropertyBillingQuery,
   useGetPropertyOwnersQuery,
   useGetPropertyQuery,
 } from "../api";
@@ -23,7 +24,7 @@ export default function PropertyDetail() {
           <div>
             <PropertyDetailsSection {...data} />
             <ProperOwnersSection id={id} />
-            <AssessmentSection />
+            <BillingSection id={id} />
             <AddresSection id={id} />
           </div>
           <MiniMapSection />
@@ -59,7 +60,7 @@ function PropertyDetailsSection(
   return (
     <section className="card bg-neutral text-neutral-content shadow m-2">
       <div className="card-body">
-        <h4 className="card-title">Property Details</h4>
+        <h3 className="card-title">Property Details</h3>
         <dl className="grid grid-cols-2 gap-2">
           <dt>Acres</dt>
           <dd>{totmarket_acres?.toFixed(2)}</dd>
@@ -86,7 +87,7 @@ function ProperOwnersSection(
   return (
     <section className="card bg-neutral text-neutral-content shadow m-2">
       <div className="card-body">
-        <h4 className="card-title">Property Owners</h4>
+        <h3 className="card-title">Property Owners</h3>
         <ul>
           {ownerIsError
             ? <div>{ownerError?.data?.detail}</div>
@@ -105,17 +106,40 @@ function ProperOwnersSection(
   );
 }
 
-function AssessmentSection() {
+function BillingSection({ id }: { id: string }) {
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+  } = useGetPropertyBillingQuery(id);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError && "status" in error && error?.status === 404) {
+    return <NoBillingSetup />;
+  }
+  if (isError && "status" in error) return <div>{error?.data?.detail}</div>;
+
+  const address = {
+    address1: data.address_to_line,
+    address2: data.attention_to_line,
+    city: data.city,
+    state: data.state,
+    zip: data.zip,
+  };
+
   return (
     <section className="card bg-neutral text-neutral-content shadow m-2">
       <div className="card-body">
-        <h4 className="card-title">Assessments</h4>
+        <h3 className="card-title">Billing</h3>
         <dl className="grid grid-cols-2 gap-2">
           <dt>Yearly Assessment</dt>
           <dd>${45}</dd>
           <dt>Current Balance</dt>
-          <dd>${450}</dd>
+          <dd>${data.current_balance}</dd>
         </dl>
+        <h4 className="text-md font-bold mt-3">Billing Address</h4>
+        <Address {...address} />
       </div>
     </section>
   );
@@ -133,7 +157,7 @@ function AddresSection(
   return (
     <section className="card bg-neutral text-neutral-content shadow m-2">
       <div className="card-body">
-        <h4 className="card-title">Addresses</h4>
+        <h3 className="card-title">Addresses</h3>
         {addressIsError
           ? <div>{addressError?.data?.detail}</div>
           : addressIsLoading
@@ -158,6 +182,17 @@ function MiniMapSection() {
   return (
     <section>
       <div>A mini map goes heres</div>
+    </section>
+  );
+}
+
+function NoBillingSetup() {
+  return (
+    <section className="card bg-neutral text-neutral-content shadow m-2">
+      <div className="card-body">
+        <h3 className="card-title">Billing</h3>
+        <p className="mt-3">No billing has been setup yet.</p>
+      </div>
     </section>
   );
 }

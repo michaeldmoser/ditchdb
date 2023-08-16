@@ -42,6 +42,11 @@ const propertiesApi = api.injectEndpoints({
         url: `/properties/${id}/addresses`,
       }),
     }),
+    getPropertyBilling: builder.query({
+      query: (id) => ({
+        url: `/properties/${id}/billing`,
+      }),
+    }),
   }),
 });
 
@@ -55,4 +60,5 @@ export const {
   useCreatePropertyMutation,
   useUpdatePropertyMutation,
   useDeletePropertyMutation,
+  useGetPropertyBillingQuery,
 } = propertiesApi;
