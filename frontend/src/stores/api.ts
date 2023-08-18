@@ -2,17 +2,29 @@
  * Sets up the API client for the frontend.
  */
 
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
+
+interface ApiError {
+  data: {
+    detail: string;
+  };
+  status: number;
+}
 
 const api = createApi({
-  reducerPath: 'api',
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
-    prepareHeaders: (headers, { getState }) => {
+    baseUrl: "/api",
+    prepareHeaders: (headers) => {
       return headers;
-    }
-  }),
-  endpoints: () => ({})
+    },
+  }) as BaseQueryFn<string | FetchArgs, unknown, ApiError, {}>,
+  endpoints: () => ({}),
 });
 
 export default api;
