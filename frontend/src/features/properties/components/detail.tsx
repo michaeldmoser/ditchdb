@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetPropertyAddressesQuery,
@@ -6,50 +7,76 @@ import {
   useGetPropertyQuery,
 } from "../api";
 
-import { Indicator, Orion } from "@/components/indicators";
 import { Address } from "@/components/address";
 
-export default function PropertyDetail() {
-  const { id } = useParams();
-  const { data, isLoading, error, isError } = useGetPropertyQuery(id);
+import { Card, CardBody, CardHeader } from "@/components/cards";
+import { Info } from "@/components/alerts";
+import { Button } from "@/components/buttons";
 
-  return isError
-    ? <div>{error?.data?.detail}</div>
-    : isLoading
+type PropertyDetailParams = {
+  id: string;
+};
+
+type IdProps = {
+  id: string | undefined;
+};
+
+/**
+ * Property dpetail page
+ */
+export default function PropertyDetail() {
+  const { id } = useParams<PropertyDetailParams>();
+  const { data, isLoading, error, isError } = useGetPropertyQuery(id);
+  const propertyHeadingId = useId();
+
+  if (isError && "data" in error) {
+    return <div>{error?.data?.detail}</div>;
+  }
+
+  return isLoading
     ? <div>Loading...</div>
     : (
-      <article>
-        <PropertyDetailHeader {...data} />
+      <article aria-labelledby={propertyHeadingId}>
+        <PropertyDetailHeader {...data} id={propertyHeadingId} />
         <div className="grid grid-cols-2 gap-4">
-          <div>
+          <article>
             <PropertyDetailsSection {...data} />
             <ProperOwnersSection id={id} />
             <BillingSection id={id} />
             <AddresSection id={id} />
-          </div>
+          </article>
           <MiniMapSection />
         </div>
       </article>
     );
 }
 
+/**
+ * Header for Property Detail page
+ */
 function PropertyDetailHeader(
   {
+    id,
     addr_number,
     addr_predirectional,
     addr_street,
     addr_roadsuffix,
     addr_postdirectional,
-  }: Property,
+  }: Property & { id: string },
 ) {
   return (
-    <h2 className="text-2xl">
-      {addr_number} {addr_predirectional} {addr_street} {addr_roadsuffix}{" "}
-      {addr_postdirectional}
-    </h2>
+    <header className="flex flex-col md:flex-row md:items-center md:justify-between">
+      <h2 id={id} className="text-2xl">
+        {addr_number} {addr_predirectional} {addr_street} {addr_roadsuffix}{" "}
+        {addr_postdirectional}
+      </h2>
+    </header>
   );
 }
 
+/**
+ * Display the proerty detail card
+ */
 function PropertyDetailsSection(
   {
     totmarket_acres,
@@ -58,9 +85,11 @@ function PropertyDetailsSection(
   }: Property,
 ) {
   return (
-    <section className="card bg-neutral text-neutral-content shadow m-2">
-      <div className="card-body">
-        <h3 className="card-title">Property Details</h3>
+    <Card>
+      <CardHeader>
+        Property Details
+      </CardHeader>
+      <CardBody>
         <dl className="grid grid-cols-2 gap-2">
           <dt>Acres</dt>
           <dd>{totmarket_acres?.toFixed(2)}</dd>
@@ -69,13 +98,16 @@ function PropertyDetailsSection(
           <dt>Property Type</dt>
           <dd>{proptype}</dd>
         </dl>
-      </div>
-    </section>
+      </CardBody>
+    </Card>
   );
 }
 
+/**
+ * Display the property owners card
+ */
 function ProperOwnersSection(
-  { id }: { id: string | undefined },
+  { id }: IdProps,
 ) {
   const {
     data: ownerData,
@@ -85,9 +117,11 @@ function ProperOwnersSection(
   } = useGetPropertyOwnersQuery(id);
 
   return (
-    <section className="card bg-neutral text-neutral-content shadow m-2">
-      <div className="card-body">
-        <h3 className="card-title">Property Owners</h3>
+    <Card>
+      <CardHeader>
+        Property Owners
+      </CardHeader>
+      <CardBody>
         <ul>
           {ownerIsError
             ? <div>{ownerError?.data?.detail}</div>
@@ -101,12 +135,15 @@ function ProperOwnersSection(
               ))
             )}
         </ul>
-      </div>
-    </section>
+      </CardBody>
+    </Card>
   );
 }
 
-function BillingSection({ id }: { id: string }) {
+/**
+ * BillingSection is a component that displays the billing information for a property.
+ */
+function BillingSection({ id }: IdProps) {
   const {
     data,
     isLoading,
@@ -129,9 +166,11 @@ function BillingSection({ id }: { id: string }) {
   };
 
   return (
-    <section className="card bg-neutral text-neutral-content shadow m-2">
-      <div className="card-body">
-        <h3 className="card-title">Billing</h3>
+    <Card>
+      <CardHeader>
+        Billing
+      </CardHeader>
+      <CardBody>
         <dl className="grid grid-cols-2 gap-2">
           <dt>Yearly Assessment</dt>
           <dd>${45}</dd>
@@ -140,13 +179,16 @@ function BillingSection({ id }: { id: string }) {
         </dl>
         <h4 className="text-md font-bold mt-3">Billing Address</h4>
         <Address {...address} />
-      </div>
-    </section>
+      </CardBody>
+    </Card>
   );
 }
 
+/**
+ * AddresSection is a component that displays the addresses for a property.
+ */
 function AddresSection(
-  { id }: { id: string | undefined },
+  { id }: IdProps,
 ) {
   const {
     data: addressData,
@@ -154,10 +196,11 @@ function AddresSection(
     error: addressError,
     isError: addressIsError,
   } = useGetPropertyAddressesQuery(id);
+
   return (
-    <section className="card bg-neutral text-neutral-content shadow m-2">
-      <div className="card-body">
-        <h3 className="card-title">Addresses</h3>
+    <Card>
+      <CardHeader>Addresses</CardHeader>
+      <CardBody>
         {addressIsError
           ? <div>{addressError?.data?.detail}</div>
           : addressIsLoading
@@ -166,18 +209,19 @@ function AddresSection(
             <ul className="grid grid-cols-2 gap-2">
               {addressData.map((address, key: number) => (
                 <li key={key}>
-                  <Indicator>
-                    <Address {...address} />
-                  </Indicator>
+                  <Address {...address} />
                 </li>
               ))}
             </ul>
           )}
-      </div>
-    </section>
+      </CardBody>
+    </Card>
   );
 }
 
+/**
+ * MiniMapSection is a component that displays a mini map for a property.
+ */
 function MiniMapSection() {
   return (
     <section>
