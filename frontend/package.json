@@ -16,10 +16,13 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "@storybook/addon-styling": "^1.3.6",
+    "clsx": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.11.2"
+    "react-router-dom": "^6.11.2",
+    "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
     "@savvywombat/tailwindcss-grid-areas": "^3.0.1",
