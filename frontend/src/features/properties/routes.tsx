@@ -1,7 +1,6 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from "react-router-dom";
 
-import Layout from './layout';
-import List from './list';
+import Layout from "./layout";
 
 export default function PropertiesRoutes() {
   return (
