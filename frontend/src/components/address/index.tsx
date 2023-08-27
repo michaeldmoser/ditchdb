@@ -1,3 +1,14 @@
+import { HTMLAttributes } from "react";
+
+type AddressProps = HTMLAttributes<"div"> & {
+  address1: string | null | undefined;
+  address2: string | null | undefined;
+  address3: string | null | undefined;
+  city: string;
+  state: string;
+  zip: string;
+};
+
 /**
  * Displays an address on the screen.
  */

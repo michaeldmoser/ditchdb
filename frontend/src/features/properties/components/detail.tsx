@@ -10,8 +10,7 @@ import {
 import { Address } from "@/components/address";
 
 import { Card, CardBody, CardHeader } from "@/components/cards";
-import { Info } from "@/components/alerts";
-import { Button } from "@/components/buttons";
+import NoBillingSetup from "./no-billing-setup";
 
 type PropertyDetailParams = {
   id: string;
@@ -176,9 +175,11 @@ function BillingSection({ id }: IdProps) {
           <dd>${45}</dd>
           <dt>Current Balance</dt>
           <dd>${data.current_balance}</dd>
+          <dt>Billing Address</dt>
+          <dd className="grid grid-cols-2">
+            <Address {...address} />
+          </dd>
         </dl>
-        <h4 className="text-md font-bold mt-3">Billing Address</h4>
-        <Address {...address} />
       </CardBody>
     </Card>
   );
@@ -226,17 +227,6 @@ function MiniMapSection() {
   return (
     <section>
       <div>A mini map goes heres</div>
-    </section>
-  );
-}
-
-function NoBillingSetup() {
-  return (
-    <section className="card bg-neutral text-neutral-content shadow m-2">
-      <div className="card-body">
-        <h3 className="card-title">Billing</h3>
-        <p className="mt-3">No billing has been setup yet.</p>
-      </div>
     </section>
   );
 }
