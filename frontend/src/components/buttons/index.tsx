@@ -27,3 +27,20 @@ export function Button(
     </button>
   );
 }
+
+export function OutlineButton(
+  { children, className, type = "button", ...props }: ButtonProps,
+) {
+  const baseClasses =
+    "py-[.688rem] px-4 inline-flex justify-center items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-500 hover:text-white hover:bg-blue-500 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-blue-500";
+
+  return (
+    <button
+      type={type}
+      className={cx(baseClasses, className)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
