@@ -13,7 +13,7 @@ export default function Layout() {
         <PropertiesSearch />
         <section>
           <Routes>
-            <Route path="/:id" element={<PropertyDetail />} />
+            <Route path="/:propertyId" element={<PropertyDetail />} />
             <Route path="/" element={<PropertyMap />} />
           </Routes>
         </section>
