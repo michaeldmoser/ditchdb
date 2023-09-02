@@ -1,9 +1,9 @@
 import { HTMLAttributes } from "react";
 
-type AddressProps = HTMLAttributes<"div"> & {
+type AddressProps = HTMLAttributes<HTMLDivElement> & {
   address1: string | null | undefined;
-  address2: string | null | undefined;
-  address3: string | null | undefined;
+  address2?: string;
+  address3?: string;
   city: string;
   state: string;
   zip: string;
