@@ -3,7 +3,7 @@ import { useId, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import cx from "@/utils/cx";
 
-import { Info } from "@/components/alerts";
+import { InfoAlert } from "@/components/alerts";
 import { Button, OutlineButton } from "@/components/buttons";
 import { Card, CardBody, CardHeader } from "@/components/cards";
 import XIcon from "@/components/icons/X";
@@ -31,7 +31,7 @@ export default function NoBillingSetup() {
     <Card>
       <CardHeader>Billing</CardHeader>
       <CardBody>
-        <Info>
+        <InfoAlert>
           <div className="grid grid-cols-2 w-full items-center">
             <div>No billing has been setup yet.</div>
             <div className="text-right">
@@ -110,7 +110,7 @@ export default function NoBillingSetup() {
               </Dialog.Root>
             </div>
           </div>
-        </Info>
+        </InfoAlert>
       </CardBody>
     </Card>
   );

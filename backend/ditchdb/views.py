@@ -1,5 +1,5 @@
 """REST API views for ditchdb app."""
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .serializers import (
@@ -37,7 +37,7 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
             for entity in owner.party.names.all()
         ]
 
-        return Response([PartynameSerializer(owner).data for owner in owners])
+        return Response(PartynameSerializer(owners, many=True).data)
 
     @action(detail=True)
     def addresses(self, request, pk=None):
@@ -50,7 +50,7 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
             )
             for address in owner.party.addresses.all()
         ]
-        return Response([PartyaddressSerializer(address).data for address in addresses])
+        return Response(PartyaddressSerializer(address, many=True).data)
 
     @action(detail=True)
     def billing(self, request, pk=None):
@@ -82,3 +82,11 @@ class BillingViewSet(viewsets.ModelViewSet):
 
     queryset = Billing.objects.all().order_by("address_to_line")
     serializer_class = BillingSerializer
+
+
+class PropertyOwnersListView(generics.ListAPIView):
+    serializer_class = PartynameSerializer
+
+    def get_queryset(self):
+        property_id = self.kwargs["property_id"]
+        return PropertyOwner.objects.filter(property_id=property_id)

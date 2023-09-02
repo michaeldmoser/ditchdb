@@ -76,6 +76,7 @@ class PartyaddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Partyaddr
         fields = (
+            "id",
             "defaultaddress",
             "address1",
             "address1",

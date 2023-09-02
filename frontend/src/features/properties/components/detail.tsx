@@ -1,5 +1,12 @@
 import { useId } from "react";
-import { useParams } from "react-router-dom";
+import { UseQueryResult } from "@tanstack/react-query";
+import { Address } from "@/components/address";
+
+import { Card, CardBody, CardHeader } from "@/components/cards";
+import { ErrorAlert } from "@/components/alerts";
+import type { Property, PropertyOwner } from "../";
+import NoBillingSetup from "./no-billing-setup";
+
 import {
   useGetPropertyAddressesQuery,
   useGetPropertyBillingQuery,
@@ -7,47 +14,38 @@ import {
   useGetPropertyQuery,
 } from "../api";
 
-import { Address } from "@/components/address";
-
-import { Card, CardBody, CardHeader } from "@/components/cards";
-import NoBillingSetup from "./no-billing-setup";
-
-type PropertyDetailParams = {
-  id: string;
-};
+import { usePropertyId } from "../hooks";
 
 type IdProps = {
-  id: string | undefined;
+  id: number;
 };
 
 /**
  * Property dpetail page
  */
 export default function PropertyDetail() {
-  const { id } = useParams<PropertyDetailParams>();
-  const { data, isLoading, error, isError } = useGetPropertyQuery(id);
+  const id = usePropertyId();
+  const queryResult = useGetPropertyQuery(id);
   const propertyHeadingId = useId();
 
-  if (isError && "data" in error) {
-    return <div>{error?.data?.detail}</div>;
-  }
-
-  return isLoading
-    ? <div>Loading...</div>
-    : (
-      <article aria-labelledby={propertyHeadingId}>
-        <PropertyDetailHeader {...data} id={propertyHeadingId} />
-        <div className="grid grid-cols-2 gap-4">
-          <article>
-            <PropertyDetailsSection {...data} />
-            <ProperOwnersSection id={id} />
-            <BillingSection id={id} />
-            <AddresSection id={id} />
-          </article>
-          <MiniMapSection />
-        </div>
-      </article>
-    );
+  return (
+    <ContentLoading<Property, DjangoError> {...queryResult}>
+      {(data) => (
+        <article aria-labelledby={propertyHeadingId}>
+          <PropertyDetailHeader {...data} labelId={propertyHeadingId} />
+          <div className="grid grid-cols-2 gap-4">
+            <article>
+              <PropertyDetailsSection {...data} />
+              <PropertyOwnersSection id={id} />
+              <BillingSection id={id} />
+              <AddresSection id={id} />
+            </article>
+            <MiniMapSection />
+          </div>
+        </article>
+      )}
+    </ContentLoading>
+  );
 }
 
 /**
@@ -55,17 +53,17 @@ export default function PropertyDetail() {
  */
 function PropertyDetailHeader(
   {
-    id,
+    labelId,
     addr_number,
     addr_predirectional,
     addr_street,
     addr_roadsuffix,
     addr_postdirectional,
-  }: Property & { id: string },
+  }: Property & { labelId: string },
 ) {
   return (
     <header className="flex flex-col md:flex-row md:items-center md:justify-between">
-      <h2 id={id} className="text-2xl">
+      <h2 id={labelId} className="text-2xl">
         {addr_number} {addr_predirectional} {addr_street} {addr_roadsuffix}{" "}
         {addr_postdirectional}
       </h2>
@@ -105,15 +103,10 @@ function PropertyDetailsSection(
 /**
  * Display the property owners card
  */
-function ProperOwnersSection(
+function PropertyOwnersSection(
   { id }: IdProps,
 ) {
-  const {
-    data: ownerData,
-    isLoading: ownerIsLoading,
-    error: ownerError,
-    isError: ownerIsError,
-  } = useGetPropertyOwnersQuery(id);
+  const queryResult = useGetPropertyOwnersQuery(id);
 
   return (
     <Card>
@@ -122,17 +115,17 @@ function ProperOwnersSection(
       </CardHeader>
       <CardBody>
         <ul>
-          {ownerIsError
-            ? <div>{ownerError?.data?.detail}</div>
-            : ownerIsLoading
-            ? <div>Loading...</div>
-            : (
-              ownerData.map((owner, key) => (
-                <li key={key} className="text-error">
-                  {owner.fullname}
-                </li>
-              ))
+          <ContentLoading<PropertyOwner[]> {...queryResult}>
+            {(data) => (
+              <>
+                {data.map((owner, key) => (
+                  <li key={key} className="text-error">
+                    {owner.fullname}
+                  </li>
+                ))}
+              </>
             )}
+          </ContentLoading>
         </ul>
       </CardBody>
     </Card>
@@ -151,10 +144,10 @@ function BillingSection({ id }: IdProps) {
   } = useGetPropertyBillingQuery(id);
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError && "status" in error && error?.status === 404) {
+  if (isError && error?.response?.status === 404) {
     return <NoBillingSetup />;
   }
-  if (isError && "status" in error) return <div>{error?.data?.detail}</div>;
+  if (isError) return <div>{error?.message}</div>;
 
   const address = {
     address1: data.address_to_line,
@@ -192,23 +185,23 @@ function AddresSection(
   { id }: IdProps,
 ) {
   const {
-    data: addressData,
-    isLoading: addressIsLoading,
-    error: addressError,
-    isError: addressIsError,
+    data,
+    isLoading,
+    error,
+    isError,
   } = useGetPropertyAddressesQuery(id);
 
   return (
     <Card>
       <CardHeader>Addresses</CardHeader>
       <CardBody>
-        {addressIsError
-          ? <div>{addressError?.data?.detail}</div>
-          : addressIsLoading
+        {isError
+          ? <div>{error?.data?.detail}</div>
+          : isLoading
           ? <div>Loading...</div>
           : (
             <ul className="grid grid-cols-2 gap-2">
-              {addressData.map((address, key: number) => (
+              {data.map((address, key: number) => (
                 <li key={key}>
                   <Address {...address} />
                 </li>
@@ -229,4 +222,115 @@ function MiniMapSection() {
       <div>A mini map goes heres</div>
     </section>
   );
+}
+
+/**
+ * Guard function to check if an error is a isDjangoError
+ */
+function isDjangoError(error: any): error is DjangoError {
+  return error && error.isAxiosError;
+}
+
+function isNotFound(error: any) {
+  return error.response?.status === 404;
+}
+
+/**
+ * Display a a notFoundComponent if the error is a 404, otherwise display the errorComponent if it exists, otherwise display the error message.
+ *
+ * @param error The error from react-query
+ * @param errorComponent A component to display when an error occurs. This must be a render function.
+ * @param notFoundComponent A component to display when a 404 occurs. This must be a render function.
+ */
+function displayError<Terror>(
+  { error, errorComponent, notFoundComponent }:
+    & { error: Terror }
+    & {
+      errorComponent?: (error: Terror) => React.ReactNode;
+      notFoundComponent?: (error: Terror) => React.ReactNode;
+    },
+) {
+  if (isDjangoError(error) && isNotFound(error)) {
+    return notFoundComponent ? notFoundComponent(error) : <div>Not Found</div>;
+  }
+
+  if (isDjangoError(error)) {
+    return errorComponent ? errorComponent(error) : <div>{error.message}</div>;
+  }
+
+  if (error instanceof Error) {
+    return <div>{error.message}</div>;
+  }
+
+  throw new Error("Unhandled error");
+}
+
+/**
+ * Display and error message from react-query if one exists, otherwise display the content when loading is completed, otherwise display a loading message.
+ * @param children The content to display when loading is completed. This must be a render function.
+ * @param error The error from react-query
+ * @param isLoading The loading state from react-query
+ * @param data The data from react-query
+ * @param ErrorComponent A component to display when an error occurs. This must be a render function.
+ */
+function ContentLoading<Tdata = any, Terror = DjangoError>(
+  { error, children, isLoading, data, errorComponent, notFoundComponent }:
+    & UseQueryResult<Tdata, Terror>
+    & {
+      children: (data: Tdata) => React.ReactNode;
+      errorComponent?: (error: Terror) => React.ReactNode;
+      notFoundComponent?: (error: Terror) => React.ReactNode;
+    },
+) {
+  if (error) {
+    return (
+      <>
+        {displayError<Terror>(
+          { error, errorComponent, notFoundComponent },
+        )}
+      </>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex animate-pulse">
+        <div className="ml-4 mt-2 w-full">
+          <h3
+            className="h-4 bg-gray-200 rounded-md dark:bg-gray-700"
+            style={{ width: "40%" }}
+          >
+          </h3>
+
+          <ul className="mt-5 space-y-3">
+            <li className="w-full h-4 bg-gray-200 rounded-md dark:bg-gray-700">
+            </li>
+            <li className="w-full h-4 bg-gray-200 rounded-md dark:bg-gray-700">
+            </li>
+            <li className="w-full h-4 bg-gray-200 rounded-md dark:bg-gray-700">
+            </li>
+            <li className="w-full h-4 bg-gray-200 rounded-md dark:bg-gray-700">
+            </li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  return <>{children(data)}</>;
+}
+
+/**
+ * Determine the error message to display from an error object.
+ */
+function parseError(error: DjangoError) {
+  return ("response" in error && error.response?.status === 404)
+    ? "The record could not be found."
+    : ("response" in error && error.response?.data)
+    ? error.response?.data?.detail
+    : ("message" in error)
+    ? error.message
+    : "An unknown error has occurred.";
 }
