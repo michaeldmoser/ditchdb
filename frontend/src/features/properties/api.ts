@@ -1,64 +1,56 @@
 /**
  * @file The api calls for the properties feature.
  */
+import axios from "axios";
+import type { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 
-import api from "@/stores/api";
+import { Property, PropertyAddress, PropertyOwner } from ".";
 
-const propertiesApi = api.injectEndpoints({
-  endpoints: (builder) => ({
-    getProperties: builder.query<DjangoResponse<Property>, void>({
-      query: () => "/properties/",
-    }),
-    getProperty: builder.query({
-      query: (id) => `/properties/${id}`,
-    }),
-    createProperty: builder.mutation({
-      query: (property) => ({
-        url: "/properties",
-        method: "POST",
-        body: property,
-      }),
-    }),
-    updateProperty: builder.mutation({
-      query: ({ id, ...patch }) => ({
-        url: `/properties/${id}`,
-        method: "PATCH",
-        body: patch,
-      }),
-    }),
-    deleteProperty: builder.mutation({
-      query: (id) => ({
-        url: `/properties/${id}`,
-        method: "DELETE",
-      }),
-    }),
-    getPropertyOwners: builder.query({
-      query: (id) => ({
-        url: `/properties/${id}/owners`,
-      }),
-    }),
-    getPropertyAddresses: builder.query({
-      query: (id) => ({
-        url: `/properties/${id}/addresses`,
-      }),
-    }),
-    getPropertyBilling: builder.query({
-      query: (id) => ({
-        url: `/properties/${id}/billing`,
-      }),
-    }),
-  }),
-});
+export function useGetPropertyQuery(id: number) {
+  return useQuery<Property, AxiosError>(
+    {
+      queryKey: ["property", id],
+      queryFn: () => axios.get(`/api/properties/${id}`).then((res) => res.data),
+    },
+  );
+}
 
-api.enhanceEndpoints({ addTagTypes: ["Properties"] });
+export function useGetPropertiesQuery() {
+  return useQuery<DjangoResponse<Property>, AxiosError>(
+    {
+      queryKey: ["properties"],
+      queryFn: () => axios.get("/api/properties").then((res) => res.data),
+    },
+  );
+}
 
-export const {
-  useGetPropertiesQuery,
-  useGetPropertyQuery,
-  useGetPropertyOwnersQuery,
-  useGetPropertyAddressesQuery,
-  useCreatePropertyMutation,
-  useUpdatePropertyMutation,
-  useDeletePropertyMutation,
-  useGetPropertyBillingQuery,
-} = propertiesApi;
+export function useGetPropertyOwnersQuery(id: number) {
+  return useQuery<PropertyOwner[], AxiosError>(
+    {
+      queryKey: ["propertyOwners", id],
+      queryFn: () =>
+        axios.get(`/api/properties/${id}/owners`).then((res) => res.data),
+    },
+  );
+}
+
+export function useGetPropertyAddressesQuery(id: number) {
+  return useQuery<PropertyAddress[], AxiosError>(
+    {
+      queryKey: ["propertyAddresses", id],
+      queryFn: () =>
+        axios.get(`/api/properties/${id}/addresses`).then((res) => res.data),
+    },
+  );
+}
+
+export function useGetPropertyBillingQuery(id: number) {
+  return useQuery(
+    {
+      queryKey: ["propertyBilling", id],
+      queryFn: () =>
+        axios.get(`/api/properties/${id}/billing`).then((res) => res.data),
+    },
+  );
+}

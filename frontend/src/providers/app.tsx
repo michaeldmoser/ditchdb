@@ -1,15 +1,22 @@
-import { RouterProvider } from 'react-router-dom';
-import { AppRoutes } from '@/routes';
-import store from '@/stores';
-import { Provider } from 'react-redux';
-import { PropsWithChildren } from 'react';
+import { RouterProvider } from "react-router-dom";
+import { AppRoutes } from "@/routes";
 
-const StoreProvider = ({ children }: PropsWithChildren) => (
-  <Provider store={store}>{children}</Provider>
-);
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import axios from "axios";
+
+// axios.defaults.baseURL = window.location.host + "/api";
+// console.log("axios.defaults.baseURL", axios.defaults.baseURL);
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 export const AppProvider = () => (
-  <StoreProvider>
+  <QueryClientProvider client={queryClient}>
     <RouterProvider router={AppRoutes} />
-  </StoreProvider>
+  </QueryClientProvider>
 );
