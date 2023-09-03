@@ -62,6 +62,20 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
 
         return Response(BillingSerializer(billing).data)
 
+    @billing.mapping.post
+    def set_billing(self, request, pk=None):
+        """Set the billing address for this property"""
+        property = self.get_object()
+        billing = property.billing.filter(active=True).first()
+        if billing is None:
+            billing = Billing(property=property)
+
+        serializer = BillingSerializer(billing, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
 
 class PeopleViewSet(viewsets.ModelViewSet):
     """API endpoint that allows people to be viewed or edited."""

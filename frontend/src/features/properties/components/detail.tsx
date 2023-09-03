@@ -147,7 +147,7 @@ function BillingSection({ id }: IdProps) {
       <CardBody>
         <ContentLoading<PropertyBilling>
           {...queryResult}
-          notFoundComponent={NoBillingSetup}
+          notFoundComponent={() => <NoBillingSetup propertyId={id} />}
         >
           {(data) => {
             const address = {

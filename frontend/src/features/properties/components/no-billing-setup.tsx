@@ -1,13 +1,15 @@
-import { useId, useState } from "react";
+import { forwardRef, useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import cx from "@/utils/cx";
+import { SubmitHandler, useForm } from "react-hook-form";
 
+import cx from "@/utils/cx";
 import { InfoAlert } from "@/components/alerts";
 import { Button, OutlineButton } from "@/components/buttons";
 import XIcon from "@/components/icons/X";
+import { TextField } from "@/components/forms";
 
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useCreatePropertyBilling } from "../api";
 
 interface IFormInput {
   address_to_line: string;
@@ -18,12 +20,14 @@ interface IFormInput {
   zip: string;
 }
 
-export default function NoBillingSetup() {
+export default function NoBillingSetup({ propertyId }: { propertyId: number }) {
   const { handleSubmit, register } = useForm<IFormInput>();
   const [open, setOpen] = useState(false);
+  const { mutate } = useCreatePropertyBilling();
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     setOpen(false);
-    console.log(data);
+    console.dir(data);
+    mutate({ propertyId, ...data });
   };
 
   return (
@@ -101,30 +105,5 @@ export default function NoBillingSetup() {
         </div>
       </div>
     </InfoAlert>
-  );
-}
-
-type TextFieldProps = {
-  label: string;
-  name: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
-
-function TextField({ label, name, ...props }: TextFieldProps) {
-  const id = useId();
-  return (
-    <div className="my-4">
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium mb-2 dark:text-white"
-      >
-        {label}
-      </label>
-      <input
-        id={id}
-        type="text"
-        className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        {...props}
-      />
-    </div>
   );
 }

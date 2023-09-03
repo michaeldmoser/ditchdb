@@ -3,7 +3,7 @@
  */
 import axios from "axios";
 import type { AxiosError } from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Property, PropertyAddress, PropertyBilling, PropertyOwner } from ".";
 
@@ -51,6 +51,20 @@ export function useGetPropertyBillingQuery(id: number) {
       queryKey: ["propertyBilling", id],
       queryFn: () =>
         axios.get(`/api/properties/${id}/billing`).then((res) => res.data),
+    },
+  );
+}
+
+export function useCreatePropertyBilling() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    {
+      mutationFn: ({ propertyId, ...billing }) => {
+        return axios.post(`/api/properties/${propertyId}/billing`, billing);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["propertyBilling"] });
+      },
     },
   );
 }
