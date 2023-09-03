@@ -19,9 +19,13 @@ class Billing(models.Model):
         app_label="ditchdb", model="organizations"
     )
     content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, limit_choices_to=limit
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to=limit,
+        null=True,
+        blank=True,
     )
-    object_id = models.PositiveIntegerField()
+    object_id = models.PositiveIntegerField(blank=True, null=True)
     bill_to = GenericForeignKey("content_type", "object_id")
     active = models.BooleanField(default=True)
 
