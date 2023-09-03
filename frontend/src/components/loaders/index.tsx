@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { isDjangoError, isNotFound } from "@/utils/guards";
 import { UseQueryResult } from "@tanstack/react-query";
 
@@ -18,6 +19,8 @@ export function ContentLoading<Tdata = any, Terror = DjangoError>(
       notFoundComponent?: (error: Terror) => React.ReactNode;
     },
 ) {
+  const displayLoader = useDelayDisplayLoader(isLoading);
+
   if (error) {
     return (
       <DisplayError
@@ -28,7 +31,7 @@ export function ContentLoading<Tdata = any, Terror = DjangoError>(
     );
   }
 
-  if (isLoading) {
+  if (displayLoader) {
     return <Loading />;
   }
 
@@ -60,6 +63,25 @@ export function Loading() {
       </div>
     </div>
   );
+}
+
+/**
+ * Display a loading message after a delay.
+ */
+function useDelayDisplayLoader(isLoading: boolean) {
+  const [displayLoader, setDisplayLoader] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      const timeout = setTimeout(() => {
+        setDisplayLoader(true);
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+    setDisplayLoader(false);
+  }, [isLoading]);
+
+  return displayLoader && isLoading;
 }
 
 /**
