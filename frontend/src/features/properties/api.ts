@@ -5,7 +5,7 @@ import axios from "axios";
 import type { AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import { Property, PropertyAddress, PropertyOwner } from ".";
+import { Property, PropertyAddress, PropertyBilling, PropertyOwner } from ".";
 
 export function useGetPropertyQuery(id: number) {
   return useQuery<Property, AxiosError>(
@@ -46,7 +46,7 @@ export function useGetPropertyAddressesQuery(id: number) {
 }
 
 export function useGetPropertyBillingQuery(id: number) {
-  return useQuery(
+  return useQuery<PropertyBilling, AxiosError>(
     {
       queryKey: ["propertyBilling", id],
       queryFn: () =>
