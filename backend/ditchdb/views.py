@@ -50,7 +50,7 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
             )
             for address in owner.party.addresses.all()
         ]
-        return Response(PartyaddressSerializer(address, many=True).data)
+        return Response(PartyaddressSerializer(addresses, many=True).data)
 
     @action(detail=True)
     def billing(self, request, pk=None):
