@@ -1,4 +1,4 @@
-import { ComponentProps, forwardRef, HTMLProps } from "react";
+import { ComponentProps, forwardRef } from "react";
 import cx from "@/utils/cx";
 
 type ButtonProps =
@@ -9,7 +9,7 @@ type ButtonProps =
   };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, type = "button", ...props }, ref) => {
+  ({ children, className, ...props }, ref) => {
     const baseClasses =
       "py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all text-sm";
 
@@ -18,7 +18,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
-        type={type}
         className={cx(baseClasses, colorClasses, className)}
         {...props}
         ref={ref}
@@ -30,7 +29,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 export const OutlineButton = forwardRef<HTMLButtonElement, ButtonProps>((
-  { children, className, type = "button", ...props }: ButtonProps,
+  { children, className, ...props }: ButtonProps,
   ref,
 ) => {
   const baseClasses =
@@ -38,7 +37,6 @@ export const OutlineButton = forwardRef<HTMLButtonElement, ButtonProps>((
 
   return (
     <button
-      type={type}
       className={cx(baseClasses, className)}
       {...props}
       ref={ref}
