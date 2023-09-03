@@ -4,7 +4,7 @@ import { Address } from "@/components/address";
 
 import { Card, CardBody, CardHeader } from "@/components/cards";
 import { ErrorAlert } from "@/components/alerts";
-import type { Property, PropertyOwner } from "../";
+import type { Property, PropertyBilling, PropertyOwner } from "../";
 import NoBillingSetup from "./no-billing-setup";
 
 import {
@@ -35,12 +35,12 @@ export default function PropertyDetail() {
         <article aria-labelledby={propertyHeadingId}>
           <PropertyDetailHeader {...data} labelId={propertyHeadingId} />
           <div className="grid grid-cols-2 gap-4">
-            <article>
+            <section>
               <PropertyDetailsSection {...data} />
               <PropertyOwnersSection id={id} />
               <BillingSection id={id} />
               <AddresSection id={id} />
-            </article>
+            </section>
             <MiniMapSection />
           </div>
         </article>
@@ -137,26 +137,7 @@ function PropertyOwnersSection(
  * BillingSection is a component that displays the billing information for a property.
  */
 function BillingSection({ id }: IdProps) {
-  const {
-    data,
-    isLoading,
-    error,
-    isError,
-  } = useGetPropertyBillingQuery(id);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError && error?.response?.status === 404) {
-    return <NoBillingSetup />;
-  }
-  if (isError) return <div>{error?.message}</div>;
-
-  const address = {
-    address1: data.address_to_line,
-    address2: data.attention_to_line,
-    city: data.city,
-    state: data.state,
-    zip: data.zip,
-  };
+  const queryResult = useGetPropertyBillingQuery(id);
 
   return (
     <Card>
@@ -164,16 +145,33 @@ function BillingSection({ id }: IdProps) {
         Billing
       </CardHeader>
       <CardBody>
-        <dl className="grid grid-cols-2 gap-2">
-          <dt>Yearly Assessment</dt>
-          <dd>${45}</dd>
-          <dt>Current Balance</dt>
-          <dd>${data.current_balance}</dd>
-          <dt>Billing Address</dt>
-          <dd className="grid grid-cols-2">
-            <Address {...address} />
-          </dd>
-        </dl>
+        <ContentLoading<PropertyBilling>
+          {...queryResult}
+          notFoundComponent={NoBillingSetup}
+        >
+          {(data) => {
+            const address = {
+              address1: data.address_to_line,
+              address2: data.attention_to_line,
+              city: data.city ?? "",
+              state: data.state ?? "",
+              zip: data.zip,
+            };
+
+            return (
+              <dl className="grid grid-cols-2 gap-2">
+                <dt>Yearly Assessment</dt>
+                <dd>${45}</dd>
+                <dt>Current Balance</dt>
+                <dd>${data.current_balance}</dd>
+                <dt>Billing Address</dt>
+                <dd className="grid grid-cols-2">
+                  <Address {...address} />
+                </dd>
+              </dl>
+            );
+          }}
+        </ContentLoading>
       </CardBody>
     </Card>
   );

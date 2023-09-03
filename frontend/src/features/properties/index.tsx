@@ -37,3 +37,13 @@ export interface PropertyAddress {
   state?: string | null;
   zip?: string | null;
 }
+
+export interface PropertyBilling {
+  address_to_line?: string | null;
+  attention_to_line?: string | null;
+  street_address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  current_balance?: number | null;
+}
