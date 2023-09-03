@@ -1,9 +1,9 @@
 import { HTMLAttributes } from "react";
 
 type AddressProps = HTMLAttributes<HTMLDivElement> & {
-  address1: string | null | undefined;
-  address2?: string | null | undefined;
-  address3?: string | null | undefined;
+  addressTo: string | null | undefined;
+  attentionTo: string | null | undefined;
+  streetAddress?: string | null | undefined;
   city: string;
   state: string;
   zip?: string | null | undefined;
@@ -13,13 +13,14 @@ type AddressProps = HTMLAttributes<HTMLDivElement> & {
  * Displays an address on the screen.
  */
 export function Address(
-  { address1, address2, address3, city, state, zip, ...props }: AddressProps,
+  { addressTo, attentionTo, streetAddress, city, state, zip, ...props }:
+    AddressProps,
 ) {
   return (
     <div {...props}>
-      {!!address1 && <div>{address1}</div>}
-      {!!address2 && <div>{address2}</div>}
-      {!!address3 && <div>{address3}</div>}
+      {!!addressTo && <div>{addressTo}</div>}
+      {!!attentionTo && <div>{attentionTo}</div>}
+      {!!streetAddress && <div>{streetAddress}</div>}
       <div>{city}, {state} {zip}</div>
     </div>
   );

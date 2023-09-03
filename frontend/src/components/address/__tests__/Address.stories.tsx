@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/7.0/react/writing-stories/args
 export const Primary: Story = {
   args: {
-    address1: "123 Main St",
+    streetAddress: "123 Main St",
     city: "Missoula",
     state: "MT",
     zip: "59801",
@@ -25,8 +25,8 @@ export const Primary: Story = {
 
 export const TwoAddressLines: Story = {
   args: {
-    address1: "Bill and Alice",
-    address2: "123 Main St",
+    addressTo: "Bill and Alice",
+    streetAddress: "123 Main St",
     city: "Missoula",
     state: "MT",
     zip: "59801",
@@ -35,9 +35,9 @@ export const TwoAddressLines: Story = {
 
 export const ThreeAddressLines: Story = {
   args: {
-    address1: "Bill and Alice",
-    address2: "ATTN: Bill",
-    address3: "123 Main St",
+    addressTo: "Bill and Alice",
+    attentionTo: "ATTN: Bill",
+    streetAddress: "123 Main St",
     city: "Missoula",
     state: "MT",
     zip: "59801",

@@ -151,8 +151,9 @@ function BillingSection({ id }: IdProps) {
         >
           {(data) => {
             const address = {
-              address1: data.address_to_line,
-              address2: data.attention_to_line,
+              addressTo: data.address_to_line,
+              attentionTo: data.attention_to_line,
+              streetAddress: data.street_address,
               city: data.city ?? "",
               state: data.state ?? "",
               zip: data.zip,
