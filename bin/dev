@@ -34,6 +34,22 @@ case $1 in
         full_reset
         ;;
 
+    db)
+        PGPASSWORD=postgres psql -h localhost -U postgres
+        ;;
+
+    db.dev)
+        PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_dev
+        ;;
+
+    db.test)
+        PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_test
+        ;;
+
+    db.e2e)
+        PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_e2e
+        ;;
+
     *)
         zsh -c "$DOCKER_EXEC_DEV make $1"
         ;;
