@@ -17,9 +17,10 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["frontend/src/*"]
     },
-    "typeRoots": ["node_modules/@types", "src/**/*.d.ts"]
+    "typeRoots": ["node_modules/@types", "src/**/*.d.ts"],
+    "types": ["vitest/globals"]
   },
   "include": ["**/*.tsx", "**/*.ts"],
 

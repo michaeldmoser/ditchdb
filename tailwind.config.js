@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "media",
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./index.html"],
+  content: ["./frontend/src/**/*.{js,ts,jsx,tsx}", "./frontend/index.html"],
   theme: {
     extend: {
       keyframes: {

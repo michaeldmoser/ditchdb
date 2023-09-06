@@ -2,10 +2,10 @@ all: setup
 
 setup: .env setup-frontend install.python 
 
-setup-frontend: frontend/node_modules frontend.models
+setup-frontend: node_modules frontend.models
 
-frontend/node_modules: frontend/package.json
-	cd frontend && npm install
+node_modules: package.json
+	npm install
 
 install.python: /tmp/python.installed
 /tmp/python.installed: pyproject.toml poetry.lock
@@ -18,7 +18,7 @@ install.playwright: install.python /tmp/playwright.installed
 	touch /tmp/playwright.installed
 
 frontend.models: frontend/src/types/ditchdb/index.d.ts
-frontend/src/types/ditchdb/index.d.ts:
+frontend/src/types/ditchdb/index.d.ts: backend/ditchdb/models.py
 	cd backend && python ./manage.py generate_ts --all -t -o ../frontend/src/types/
 	cd frontend/src/types/ditchdb && sed -e 's/^export //' index.ts > index.d.ts
 	rm frontend/src/types/ditchdb/index.ts
@@ -36,7 +36,7 @@ testing/e2e/.env: .env
 	echo "DJANGO_PORT=5174" >> $@
 
 frontend/dist:
-	cd frontend && npm build
+	npm run build
 
 .PHONY: test.full
 test.full: test.e2e
@@ -55,7 +55,7 @@ clean:
 	find . -type f -name *.pyc -delete
 	find . -type d -name __pycache__ -delete
 	-rm -rf e2e/node_modules
-	-rm -rf frontend/node_modules
+	-rm -rf node_modules
 
 ## Development
 .PHONY: migrate
@@ -72,7 +72,7 @@ serve.e2e: setup
 
 .PHONY: serve.storybook
 serve.storybook: setup-frontend
-	cd frontend && npm run storybook
+	npm run storybook
 
 .PHONY: import.orion
 import.orion: 
