@@ -158,7 +158,6 @@ function BillingSection({ id }: IdProps) {
               state: data.state ?? "",
               zip: data.zip,
             };
-
             return (
               <dl className="grid grid-cols-2 gap-2">
                 <dt>Yearly Assessment</dt>
@@ -184,30 +183,32 @@ function BillingSection({ id }: IdProps) {
 function AddresSection(
   { id }: IdProps,
 ) {
-  const {
-    data,
-    isLoading,
-    error,
-    isError,
-  } = useGetPropertyAddressesQuery(id);
+  const queryResult = useGetPropertyAddressesQuery(id);
 
   return (
     <Card>
       <CardHeader>Addresses</CardHeader>
       <CardBody>
-        {isError
-          ? <div>{error?.data?.detail}</div>
-          : isLoading
-          ? <div>Loading...</div>
-          : (
+        <ContentLoading<Partyaddress[]> {...queryResult}>
+          {(data) => (
             <ul className="grid grid-cols-2 gap-2">
-              {data.map((address, key: number) => (
-                <li key={key}>
-                  <Address {...address} />
-                </li>
-              ))}
+              {data.map((address, key: number) => {
+                const addressProps = {
+                  streetAddress: address.address3 || address.address2 ||
+                    address.address1,
+                  city: address.city ?? "",
+                  state: address.state ?? "",
+                  zip: address.zip,
+                };
+                return (
+                  <li key={key}>
+                    <Address {...addressProps} />
+                  </li>
+                );
+              })}
             </ul>
           )}
+        </ContentLoading>
       </CardBody>
     </Card>
   );

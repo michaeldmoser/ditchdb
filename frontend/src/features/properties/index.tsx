@@ -1,5 +1,5 @@
 export interface Property {
-  id?: number;
+  id: number;
   geocode?: string | null;
   addr_number?: string | null;
   addr_predirectional?: string | null;

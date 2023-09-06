@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import X from "../X";
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/react/writing-stories/introduction
-const meta: Meta<typeof Address> = {
+const meta: Meta<typeof X> = {
   title: "Icons/X",
   component: X,
   tags: ["autodocs"],

@@ -57,7 +57,11 @@ export function useGetPropertyBillingQuery(id: number) {
 
 export function useCreatePropertyBilling() {
   const queryClient = useQueryClient();
-  return useMutation(
+  return useMutation<
+    PropertyBilling,
+    AxiosError,
+    PropertyBilling & { propertyId: number }
+  >(
     {
       mutationFn: ({ propertyId, ...billing }) => {
         return axios.post(`/api/properties/${propertyId}/billing`, billing);

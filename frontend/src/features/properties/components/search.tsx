@@ -1,5 +1,6 @@
 import { useGetPropertiesQuery } from "../api";
 import { Link } from "react-router-dom";
+import type { Property } from "../";
 
 export default function PropertiesSearch() {
   return <List />;
@@ -8,7 +9,7 @@ export default function PropertiesSearch() {
 function ListItem({ property }: { property: Property }) {
   return (
     <li className="flex justify-between gap-x-2 border-b border-base-content border-solid">
-      <Link to={property.id.toString()} className="link link-hover p-2 grow">
+      <Link to={property.id?.toString()} className="link link-hover p-2 grow">
         {property.addr_number} {property.addr_predirectional}{" "}
         {property.addr_street} {property.addr_roadsuffix}{" "}
         {property.addr_postdirectional}
@@ -27,7 +28,7 @@ function List() {
         aria-labelledby="properties-title"
         className="bg-neutral text-neutral-content"
       >
-        {data?.results?.map((property: Property, key: any) => (
+        {data?.results?.map((property, key) => (
           <ListItem key={key} property={property} />
         ))}
       </ul>

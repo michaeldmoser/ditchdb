@@ -1,8 +1,8 @@
 import { HTMLAttributes } from "react";
 
 type AddressProps = HTMLAttributes<HTMLDivElement> & {
-  addressTo: string | null | undefined;
-  attentionTo: string | null | undefined;
+  addressTo?: string | null | undefined;
+  attentionTo?: string | null | undefined;
   streetAddress?: string | null | undefined;
   city: string;
   state: string;
