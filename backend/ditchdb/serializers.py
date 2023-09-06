@@ -79,7 +79,7 @@ class PartyaddressSerializer(serializers.ModelSerializer):
             "id",
             "defaultaddress",
             "address1",
-            "address1",
+            "address2",
             "address3",
             "country",
             "postalcode",
