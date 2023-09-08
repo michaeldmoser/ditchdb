@@ -24,7 +24,7 @@ export default defineConfig({
     globals: true,
     environment: "happy-dom",
     passWithNoTests: false,
-    setupFiles: "./frontend/src/testing/setup.ts",
+    setupFiles: "./src/testing/setup.ts",
   },
   server: {
     host: "0.0.0.0",

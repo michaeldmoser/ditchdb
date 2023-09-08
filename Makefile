@@ -35,6 +35,12 @@ testing/e2e/.env: .env
 	echo "VITE_DEV_PORT=5175" >> $@
 	echo "DJANGO_PORT=5174" >> $@
 
+frontend/src/testing/.env: .env
+	mkdir -p frontend/testing
+	cat .env | sed -e "s/ditchdb_dev/ditchdb_testing/g" > $@
+	echo "VITE_DEV_PORT=5177" >> $@
+	echo "DJANGO_PORT=5176" >> $@
+
 frontend/dist:
 	npm run build
 
@@ -44,6 +50,10 @@ test.full: test.e2e
 .PHONY: test.e2e
 test.e2e: install.playwright 
 	pytest testing/e2e
+
+.PHONY: test.fe 
+test.fe: setup-frontend frontend/src/testing/.env
+	bin/start-fe-tests
 
 .PHONY: clean
 clean:

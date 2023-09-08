@@ -3,7 +3,7 @@
 RUN_TYPE=${1:-run}
 
 BIN_DIR=$(dirname `readlink -f "${BASH_SOURCE:-$0}"`)
-TEST_DIR="${BIN_DIR}/../frontend/testing"
+TEST_DIR="${BIN_DIR}/../frontend/src/testing"
 PROJECT_DIR="${BIN_DIR}/../"
 
 trap cleanup EXIT
@@ -21,14 +21,18 @@ psql $DATABASE_URL << EOF
 EOF
 
 cd  $PROJECT_DIR/backend
-DJANGO_ENV=$DJANGO_ENV python ./manage.py migrate
+DJANGO_ENV=$TEST_DIR/.env python ./manage.py migrate
 
-DJANGO_ENV=${TEST_DIR}/.env VITE_DEV_PORT=$VITE_DEV_PORT DJANGO_PORT=$DJANGO_PORT $BIN_DIR/start-dev-server &
+SKIP_VITE=true DJANGO_ENV=${TEST_DIR}/.env VITE_DEV_PORT=$VITE_DEV_PORT DJANGO_PORT=$DJANGO_PORT $BIN_DIR/start-dev-server &
 DEV_PID=$!
 
-while ! curl --silent -I http://localhost:5174; do
+while ! curl --silent -I http://localhost:$DJANGO_PORT; do
   sleep 1
   echo wating for django server to start
 done
 
-wait $DEV_PID # wait for dev server to exit
+
+cd $PROJECT_DIR
+DJANGO_PORT=$DJANGO_PORT npm run test --watch
+
+
