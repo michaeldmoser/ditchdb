@@ -1,3 +1,5 @@
+current_dir = $(shell pwd)
+
 all: setup
 
 setup: .env setup-frontend install.python 
@@ -71,6 +73,7 @@ clean:
 .PHONY: migrate
 migrate: install.python
 	cd backend && python ./manage.py migrate
+	cd backend && DJANGO_ENV=$(current_dir)/frontend/src/testing/.env python  ./manage.py migrate
 
 .PHONY: serve.dev
 serve.dev: setup frontend/dist

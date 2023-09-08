@@ -55,6 +55,7 @@ class Property(models.Model):
     id = models.IntegerField(primary_key=True)
 
     geocode = models.CharField(max_length=60, blank=True, null=True)
+    address = models.CharField(max_length=110, blank=True, null=True)
     addr_number = models.CharField(max_length=20, blank=True, null=True)
     addr_predirectional = models.CharField(max_length=5, blank=True, null=True)
     addr_street = models.CharField(max_length=64, blank=True, null=True)

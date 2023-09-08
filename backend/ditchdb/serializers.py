@@ -13,11 +13,7 @@ class PropertySerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "geocode",
-            "addr_number",
-            "addr_predirectional",
-            "addr_street",
-            "addr_roadsuffix",
-            "addr_postdirectional",
+            "address",
             "addr_city",
             "addr_state",
             "addr_zip",
