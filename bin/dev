@@ -11,29 +11,15 @@ full_reset() {
         CREATE DATABASE ${DB_NAME}
 EOF
 
-        rm -rf backend/ditchdb/migrations/0???*.py
-
         dev makemigrations
         dev migrate
 
-        dev import.orion
-        dev mark.indistrict
+        make import.orion
+        make mark.indistrict
 
 }
 
 case $1 in
-    pysh)
-        zsh -c "$DOCKER_EXEC_DEV zsh -c 'cd backend && python manage.py shell'"
-        ;;
-
-    term)
-        zsh -c "$DOCKER_EXEC_DEV zsh"
-        ;;
-
-    full.reset)
-        full_reset
-        ;;
-
     db)
         PGPASSWORD=postgres psql -h localhost -U postgres
         ;;
@@ -41,13 +27,29 @@ case $1 in
     db.dev)
         PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_dev
         ;;
+        
+    db.e2e)
+        PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_e2e
+        ;;
 
     db.test)
         PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_test
         ;;
 
-    db.e2e)
-        PGPASSWORD=postgres psql -h localhost -U postgres ditchdb_e2e
+    full.reset)
+        full_reset
+        ;;
+
+    manage)
+        zsh -c "$DOCKER_EXEC_DEV zsh -c 'cd backend && python manage.py $2'"
+        ;;
+
+    pysh)
+        zsh -c "$DOCKER_EXEC_DEV zsh -c 'cd backend && python manage.py shell'"
+        ;;
+
+    term)
+        zsh -c "$DOCKER_EXEC_DEV zsh"
         ;;
 
     *)
