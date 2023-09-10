@@ -39,7 +39,7 @@ testing/e2e/.env: .env
 
 frontend/src/testing/.env: .env
 	mkdir -p frontend/testing
-	cat .env | sed -e "s/ditchdb_dev/ditchdb_testing/g" > $@
+	cat .env | sed -e "s/ditchdb_dev/ditchdb_test/g" > $@
 	echo "VITE_DEV_PORT=5177" >> $@
 	echo "DJANGO_PORT=5176" >> $@
 
