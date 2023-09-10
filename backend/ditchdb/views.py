@@ -4,16 +4,16 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .serializers import (
     PropertySerializer,
-    PeopleSerializer,
+    PersonSerializer,
     OrganizationSerializer,
-    PartynameSerializer,
-    PartyaddressSerializer,
+    OwnerSerializer,
+    MailingAddressSerializer,
     BillingSerializer,
 )
-from .models import Property, People, Organizations, Billing
+from .models import Property, Person, Organization, Billing
 
 
-class OhdcPropertiesViewSet(viewsets.ModelViewSet):
+class PropertyViewSet(viewsets.ModelViewSet):
     """API endpoint that allows properties to be viewed or edited."""
 
     queryset = Property.objects.all().order_by(
@@ -37,7 +37,7 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
             for entity in owner.party.names.all()
         ]
 
-        return Response(PartynameSerializer(owners, many=True).data)
+        return Response(OwnerSerializer(owners, many=True).data)
 
     @action(detail=True)
     def addresses(self, request, pk=None):
@@ -50,7 +50,7 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
             )
             for address in owner.party.addresses.all()
         ]
-        return Response(PartyaddressSerializer(addresses, many=True).data)
+        return Response(MailingAddressSerializer(addresses, many=True).data)
 
     @action(detail=True)
     def billing(self, request, pk=None):
@@ -77,17 +77,17 @@ class OhdcPropertiesViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=400)
 
 
-class PeopleViewSet(viewsets.ModelViewSet):
+class PersonViewSet(viewsets.ModelViewSet):
     """API endpoint that allows people to be viewed or edited."""
 
-    queryset = People.objects.all().order_by("last_name", "first_name")
-    serializer_class = PeopleSerializer
+    queryset = Person.objects.all().order_by("last_name", "first_name")
+    serializer_class = PersonSerializer
 
 
-class OrganizationsViewSet(viewsets.ModelViewSet):
+class OrganizationViewSet(viewsets.ModelViewSet):
     """API endpoint that allows organizations to be viewed or edited."""
 
-    queryset = Organizations.objects.all().order_by("name")
+    queryset = Organization.objects.all().order_by("name")
     serializer_class = OrganizationSerializer
 
 
@@ -98,8 +98,8 @@ class BillingViewSet(viewsets.ModelViewSet):
     serializer_class = BillingSerializer
 
 
-class PropertyOwnersListView(generics.ListAPIView):
-    serializer_class = PartynameSerializer
+class OwnerListView(generics.ListAPIView):
+    serializer_class = OwnerSerializer
 
     def get_queryset(self):
         property_id = self.kwargs["property_id"]

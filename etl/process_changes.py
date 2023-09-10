@@ -18,31 +18,32 @@ from ditchdb.models import (
     OrionOwner,
     OrionParty,
     Owner,
-    Party,
     Changes,
-    Partyaddr,
+    MailingAddress,
     OrionPartyaddr,
+    Owner,
+    MailingAddress,
 )  # noqa E402
 
 # Create all new parties
 new_parties = (
     OrionParty.objects.filter(properties__indistrict=True)
-    .exclude(id__in=Party.objects.all())
+    .exclude(id__in=Owner.objects.values_list("party_id", flat=True))
     .distinct()
 )
 for new_party in new_parties:
     with transaction.atomic():
-        party = Party.objects.create(id=new_party.id)
         for name in new_party.names.all():
-            party.names.create(
+            Owner.objects.create(
                 defaultname=name.defaultname,
                 fullname=name.fullname,
                 nametype=name.nametype,
                 nametype_desc=name.nametype_desc,
+                party_id=new_party.id,
             )
 
         for address in new_party.addresses.all():
-            party.addresses.create(
+            MailingAddress.objects.create(
                 defaultaddress=address.defaultaddress,
                 address1=address.address1,
                 address2=address.address2,
@@ -52,6 +53,7 @@ for new_party in new_parties:
                 city=address.city,
                 state=address.state,
                 zip=address.zip,
+                party_id=new_party.id,
             )
 
 # Find all new properties
@@ -88,19 +90,15 @@ for parcel in parcels:
             propsubcategory_desc=parcel.propsubcategory_desc,
         )
 
-        owners = parcel.owners.all()
-        for owner in owners:
-            party = Party.objects.get(id=owner.id)
-            orion_ownership = OrionOwner.objects.get(property=parcel, party=owner)
+        Changes.objects.create(property=property, change_type=Changes.NEW_PROPERTY)
 
-            Owner.objects.create(
-                party=party,
-                property=property,
-                primaryowner=orion_ownership.primaryowner,
-                timestampchange=orion_ownership.timestampchange,
-            )
+        orion_owners = parcel.owners.all()
+        for owner in orion_owners:
+            owners = Owner.objects.filter(party_id=owner.id)
+            property.owners.add(*owners)
 
-            Changes.objects.create(property=property, change_type=Changes.NEW_PROPERTY)
+            mailing_addresses = MailingAddress.objects.filter(party_id=owner.id)
+            property.addresses.add(*mailing_addresses)
 
 # Track removed properties
 parcels = Property.objects.exclude(
@@ -123,37 +121,38 @@ parcels = (
     .exclude(addr_unitnumber=F("orion_property__addr_unitnumber"))
     .exclude(addr_unittype=F("orion_property__addr_unittype"))
     .exclude(totmarket_acres=F("orion_property__totmarket_acres"))
+    .exclude(proptype="EP - Exempt Property")
 )
 for parcel in parcels:
     Changes.objects.create(property=parcel, change_type=Changes.PROPERTY_CHANGED)
 
 
-owners = Owner.objects.all()
-for owner in owners:
-    if (
-        not OrionOwner.objects.filter(propertyid=owner.property_id)
-        .filter(party_id=owner.party_id)
-        .exists()
-    ):
-        Chagnes.objects.create(
-            property=owner.property, change_type=Changes.OWNERSHIP_CHANGED
-        )
-
-addresses = Partyaddr.objects.filter(defaultaddress=True)
-for address in addresses:
-    if not (
-        OrionPartyaddr.objects.filter(defaultaddress=True)
-        .filter(address1=address.address1)
-        .filter(address2=address.address2)
-        .filter(address3=address.address3)
-        .filter(country=address.country)
-        .filter(postalcode=address.postalcode)
-        .filter(city=address.city)
-        .filter(state=address.state)
-        .filter(zip=address.zip)
-    ).exists():
-        owners = address.party.owner.select_related("property")
-        for owner in owners:
-            Changes.objects.create(
-                property=owner.property, change_type=Changes.ADDRESS_CHANGED
-            )
+# owners = Owner.objects.all()
+# for owner in owners:
+#     if (
+#         not OrionOwner.objects.filter(propertyid=owner.property_id)
+#         .filter(party_id=owner.party_id)
+#         .exists()
+#     ):
+#         Chagnes.objects.create(
+#             property=owner.property, change_type=Changes.OWNERSHIP_CHANGED
+#         )
+#
+# addresses = PropertyAddress.objects.filter(defaultaddress=True)
+# for address in addresses:
+#     if not (
+#         OrionPartyaddr.objects.filter(defaultaddress=True)
+#         .filter(address1=address.address1)
+#         .filter(address2=address.address2)
+#         .filter(address3=address.address3)
+#         .filter(country=address.country)
+#         .filter(postalcode=address.postalcode)
+#         .filter(city=address.city)
+#         .filter(state=address.state)
+#         .filter(zip=address.zip)
+#     ).exists():
+#         owners = address.party.owner.select_related("property")
+#         for owner in owners:
+#             Changes.objects.create(
+#                 property=owner.property, change_type=Changes.ADDRESS_CHANGED
+#             )

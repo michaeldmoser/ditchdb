@@ -17,14 +17,14 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 
 from django.shortcuts import render
+from django.conf import settings
 
 from rest_framework import routers
-from ditchdb.views import OhdcPropertiesViewSet, \
-    PeopleViewSet, OrganizationsViewSet
+from ditchdb.views import PropertyViewSet, PersonViewSet, OrganizationViewSet
 
 
 def render_react(request):
-    '''Render react index.html'''
+    """Render react index.html"""
     return render(request, "index.html")
 
 
@@ -37,13 +37,13 @@ class OptionalTrailingSlash(routers.DefaultRouter):
 
 
 router = OptionalTrailingSlash()
-router.register(r'properties', OhdcPropertiesViewSet)
-router.register(r'people', PeopleViewSet)
-router.register(r'organizations', OrganizationsViewSet)
+router.register(r"properties", PropertyViewSet)
+router.register(r"people", PersonViewSet)
+router.register(r"organizations", OrganizationViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path("admin/", admin.site.urls),
+    path("api/", include(router.urls)),
     re_path(r"^$", render_react),
     re_path(r"^(?:.*)/?$", render_react),
 ]

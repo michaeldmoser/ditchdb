@@ -79,10 +79,81 @@ class Property(models.Model):
         """Model metadata."""
 
         managed = True
-        db_table = "ohdc_property"
+        db_table = "property"
 
 
-class People(models.Model):
+class MailingAddress(models.Model):
+    """
+    Mailing addresses as recorded by the state
+
+    This gives us the ability to identify changes in ownership over time. It also
+    acts as the ownership record if a person or organization record is not
+    created yet.
+    """
+
+    properties = models.ManyToManyField(
+        Property,
+        related_name="addresses",
+    )
+
+    defaultaddress = models.BooleanField(blank=False, null=False, default=False)
+    address1 = models.CharField(max_length=64, blank=True, null=True)
+    address2 = models.CharField(max_length=64, blank=True, null=True)
+    address3 = models.CharField(max_length=64, blank=True, null=True)
+    country = models.CharField(max_length=20, blank=True, null=True)
+    postalcode = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=40, blank=True, null=True)
+    state = models.CharField(max_length=2, blank=True, null=True)
+    zip = models.CharField(max_length=50, blank=True, null=True)
+
+    party_id = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        """Model metadata."""
+
+        managed = True
+        db_table = "mailing_addresses"
+
+
+class Owner(models.Model):
+    """
+    The owner as recorded by the state as of the last time state data was pulled.
+
+    This gives us the ability to identify changes in ownership over time. It also
+    acts as the ownership record if a person or organization record is not
+    created yet.
+    """
+
+    properties = models.ManyToManyField(
+        Property,
+        related_name="owners",
+    )
+
+    addresses = models.ManyToManyField(
+        MailingAddress,
+        related_name="owners",
+    )
+
+    party_id = models.IntegerField(blank=True, null=True)
+    defaultname = models.BooleanField(blank=False, null=False, default=False)
+    fullname = models.CharField(max_length=167, blank=True, null=True)
+    nametype = models.IntegerField(blank=True, null=True)
+    nametype_desc = models.CharField(max_length=60, blank=True, null=True)
+    primaryowner = models.BooleanField(blank=False, null=False, default=False)
+
+    class Meta:
+        """Model metadata."""
+
+        managed = True
+        db_table = "owners"
+        indexes = [
+            models.Index(fields=["party_id", "fullname"]),
+            models.Index(fields=["fullname"]),
+            models.Index(fields=["party_id"]),
+        ]
+
+
+class Person(models.Model):
     """Model definition for People."""
 
     first_name = models.CharField(max_length=30, blank=True, null=True)
@@ -94,7 +165,7 @@ class People(models.Model):
 
     owns = models.ManyToManyField(
         Property,
-        related_name="people_owners",
+        related_name="people",
     )
 
     @property
@@ -109,7 +180,7 @@ class People(models.Model):
         db_table = "people"
 
 
-class Organizations(models.Model):
+class Organization(models.Model):
     """Model definition for Organizations."""
 
     name = models.CharField(max_length=255)
@@ -118,7 +189,7 @@ class Organizations(models.Model):
 
     owns = models.ManyToManyField(
         Property,
-        related_name="organization_owners",
+        related_name="organizations",
     )
 
     class Meta:
@@ -126,95 +197,6 @@ class Organizations(models.Model):
 
         managed = True
         db_table = "organizations"
-
-
-class Party(models.Model):
-    id = models.IntegerField(primary_key=True)
-
-    class Meta:
-        """Model metadata."""
-
-        managed = True
-        db_table = "party"
-
-
-class Partyaddr(models.Model):
-    """Person or organization mailing address."""
-
-    party = models.ForeignKey(
-        Party,
-        related_name="addresses",
-        on_delete=models.CASCADE,
-        name="party",
-        db_column="partyid",
-    )
-    defaultaddress = models.BooleanField(blank=False, null=False, default=False)
-    address1 = models.CharField(max_length=64, blank=True, null=True)
-    address2 = models.CharField(max_length=64, blank=True, null=True)
-    address3 = models.CharField(max_length=64, blank=True, null=True)
-    country = models.CharField(max_length=20, blank=True, null=True)
-    postalcode = models.CharField(max_length=20, blank=True, null=True)
-    city = models.CharField(max_length=40, blank=True, null=True)
-    state = models.CharField(max_length=2, blank=True, null=True)
-    zip = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        """Model metadata."""
-
-        managed = True
-        db_table = "ohdc_partyaddr"
-
-
-class Partyname(models.Model):
-    """Person or organization name."""
-
-    party = models.ForeignKey(
-        Party,
-        related_name="names",
-        on_delete=models.CASCADE,
-        name="party",
-        db_column="partyid",
-    )
-
-    defaultname = models.BooleanField(blank=False, null=False, default=False)
-    fullname = models.CharField(max_length=167, blank=True, null=True)
-    nametype = models.IntegerField(blank=True, null=True)
-    nametype_desc = models.CharField(max_length=60, blank=True, null=True)
-
-    class Meta:
-        """Model metadata."""
-
-        managed = True
-        db_table = "ohdc_partyname"
-
-
-class Owner(models.Model):
-    """Property ownership"""
-
-    property = models.ForeignKey(
-        Property,
-        related_name="owners",
-        on_delete=models.CASCADE,
-        db_column="propertyid",
-    )
-    party = models.ForeignKey(
-        Party,
-        related_name="owner",
-        on_delete=models.CASCADE,
-        name="party",
-        db_column="partyid",
-    )
-    primaryowner = models.BooleanField(blank=False, null=False, default=False)
-    timestampchange = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        """Model metadata."""
-
-        managed = True
-        db_table = "ohdc_owner"
-        unique_together = (("property", "party"),)
-
-        unique_together = (("property", "party"),)
 
 
 class Changes(models.Model):

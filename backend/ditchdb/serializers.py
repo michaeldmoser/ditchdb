@@ -1,6 +1,13 @@
 """Serializers for the ditchdb app."""
 from rest_framework import serializers
-from .models import Property, People, Organizations, Partyname, Partyaddr, Billing
+from .models import (
+    Property,
+    Person,
+    Organization,
+    Owner,
+    MailingAddress,
+    Billing,
+)
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -27,13 +34,13 @@ class PropertySerializer(serializers.ModelSerializer):
         )
 
 
-class PeopleSerializer(serializers.ModelSerializer):
+class PersonSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
 
-        model = People
+        model = Person
         fields = (
             "id",
             "name",
@@ -52,25 +59,25 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
 
-        model = Organizations
+        model = Organization
         fields = ("id", "name", "phone", "notes")
 
 
-class PartynameSerializer(serializers.ModelSerializer):
+class OwnerSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
 
-        model = Partyname
+        model = Owner
         fields = ("id", "defaultname", "fullname", "nametype", "nametype_desc")
 
 
-class PartyaddressSerializer(serializers.ModelSerializer):
+class MailingAddressSerializer(serializers.ModelSerializer):
     """Serializer to map party addresses into JSON format"""
 
     class Meta:
-        model = Partyaddr
+        model = MailingAddress
         fields = (
             "id",
             "defaultaddress",
