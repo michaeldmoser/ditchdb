@@ -55,7 +55,11 @@ test.e2e: install.playwright
 
 .PHONY: test.fe 
 test.fe: setup-frontend frontend/src/testing/.env
-	bin/start-fe-tests
+	npm run test
+
+.PHONY: test.be
+test.be: install.python
+	cd backend && python ./manage.py test
 
 .PHONY: clean
 clean:
@@ -82,6 +86,10 @@ serve.dev: setup frontend/dist
 .PHONY: serve.e2e
 serve.e2e: setup 
 	bin/start-e2e-server
+
+.PHONY: serve.test
+serve.test: setup 
+	bin/start-test-server
 
 .PHONY: serve.storybook
 serve.storybook: setup-frontend

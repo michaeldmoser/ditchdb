@@ -31,8 +31,5 @@ while ! curl --silent -I http://localhost:$DJANGO_PORT; do
   echo wating for django server to start
 done
 
-
-cd $PROJECT_DIR
-DJANGO_PORT=$DJANGO_PORT npm run test --watch
-
+wait $DEV_PID # wait for dev server to exit
 

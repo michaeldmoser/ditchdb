@@ -14,6 +14,7 @@ ensure_in_project_root() {
 
 alias se='serve e2e'
 alias sd='serve dev'
+alias st='serve test'
 alias ss='serve storybook'
 alias dcu='docker compose up'
 
