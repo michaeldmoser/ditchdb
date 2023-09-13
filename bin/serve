@@ -1,7 +1,6 @@
 #!/bin/zsh
+#
+source ${0:a:h}/common.sh
 
-source ${0:a:h}/setup-dev-shell
+docker_exec_dev "make serve.$1"
 
-ensure_in_project_root
-
-zsh -c "$DOCKER_EXEC_DEV make serve.$1"

@@ -1,10 +1,8 @@
 #!/bin/zsh
 
-PROJECT_ROOT_DIR=`dirname ${0:a:h}`
-if ! [ `pwd` = "$PROJECT_ROOT_DIR" ]; then 
-    pushd $PROJECT_ROOT_DIR
-fi
+source ${0:a:h}/common.sh
 
+ensure_in_project_root
 
 full_reset() {
         source ./.env
@@ -43,19 +41,19 @@ case $1 in
         ;;
 
     manage)
-        zsh -c "$DOCKER_EXEC_DEV zsh -c 'cd backend && python manage.py $2'"
+        docker_exec_dev "cd backend && python manage.py $2"
         ;;
 
     pysh)
-        zsh -c "$DOCKER_EXEC_DEV zsh -c 'cd backend && python manage.py shell'"
+        docker_exec_dev "cd backend && python manage.py shell"
         ;;
 
     term)
-        zsh -c "$DOCKER_EXEC_DEV zsh"
+        docker compose exec -it dev zsh
         ;;
 
     *)
-        zsh -c "$DOCKER_EXEC_DEV make $1"
+        docker_exec_dev make $1
         ;;
 esac
 
