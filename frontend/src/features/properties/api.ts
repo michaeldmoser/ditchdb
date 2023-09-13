@@ -5,8 +5,6 @@ import axios from "axios";
 import type { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { Property, PropertyAddress, PropertyBilling, PropertyOwner } from ".";
-
 export function useGetPropertyQuery(id: number) {
   return useQuery<Property, AxiosError>(
     {
@@ -26,7 +24,7 @@ export function useGetPropertiesQuery() {
 }
 
 export function useGetPropertyOwnersQuery(id: number) {
-  return useQuery<PropertyOwner[], AxiosError>(
+  return useQuery<Owner[], AxiosError>(
     {
       queryKey: ["propertyOwners", id],
       queryFn: () =>
@@ -36,9 +34,9 @@ export function useGetPropertyOwnersQuery(id: number) {
 }
 
 export function useGetPropertyAddressesQuery(id: number) {
-  return useQuery<PropertyAddress[], AxiosError>(
+  return useQuery<MailingAddress[], AxiosError>(
     {
-      queryKey: ["propertyAddresses", id],
+      queryKey: ["mailingAddress", id],
       queryFn: () =>
         axios.get(`/api/properties/${id}/addresses`).then((res) => res.data),
     },
@@ -46,9 +44,9 @@ export function useGetPropertyAddressesQuery(id: number) {
 }
 
 export function useGetPropertyBillingQuery(id: number) {
-  return useQuery<PropertyBilling, AxiosError>(
+  return useQuery<Billing, AxiosError>(
     {
-      queryKey: ["propertyBilling", id],
+      queryKey: ["billing", id],
       queryFn: () =>
         axios.get(`/api/properties/${id}/billing`).then((res) => res.data),
     },
@@ -58,9 +56,9 @@ export function useGetPropertyBillingQuery(id: number) {
 export function useCreatePropertyBilling() {
   const queryClient = useQueryClient();
   return useMutation<
-    PropertyBilling,
+    Billing,
     AxiosError,
-    PropertyBilling & { propertyId: number }
+    Billing & { propertyId: number }
   >(
     {
       mutationFn: ({ propertyId, ...billing }) => {

@@ -1,10 +1,7 @@
 import { useId } from "react";
-import { UseQueryResult } from "@tanstack/react-query";
 import { Address } from "@/components/address";
 
 import { Card, CardBody, CardHeader } from "@/components/cards";
-import { ErrorAlert } from "@/components/alerts";
-import type { Property, PropertyBilling, PropertyOwner } from "../";
 import NoBillingSetup from "./no-billing-setup";
 
 import {
@@ -55,18 +52,13 @@ export default function PropertyDetail() {
 function PropertyDetailHeader(
   {
     labelId,
-    addr_number,
-    addr_predirectional,
-    addr_street,
-    addr_roadsuffix,
-    addr_postdirectional,
+    address,
   }: Property & { labelId: string },
 ) {
   return (
     <header className="flex flex-col md:flex-row md:items-center md:justify-between">
       <h2 id={labelId} className="text-2xl">
-        {addr_number} {addr_predirectional} {addr_street} {addr_roadsuffix}{" "}
-        {addr_postdirectional}
+        {address}
       </h2>
     </header>
   );
@@ -116,7 +108,7 @@ function PropertyOwnersSection(
       </CardHeader>
       <CardBody>
         <ul>
-          <ContentLoading<PropertyOwner[]> {...queryResult}>
+          <ContentLoading<Owner[]> {...queryResult}>
             {(data) => (
               <>
                 {data.map((owner, key) => (
@@ -145,7 +137,7 @@ function BillingSection({ id }: IdProps) {
         Billing
       </CardHeader>
       <CardBody>
-        <ContentLoading<PropertyBilling>
+        <ContentLoading<Billing>
           {...queryResult}
           notFoundComponent={() => <NoBillingSetup propertyId={id} />}
         >
@@ -189,7 +181,7 @@ function AddresSection(
     <Card>
       <CardHeader>Addresses</CardHeader>
       <CardBody>
-        <ContentLoading<Partyaddress[]> {...queryResult}>
+        <ContentLoading<MailingAddress[]> {...queryResult}>
           {(data) => (
             <ul className="grid grid-cols-2 gap-2">
               {data.map((address, key: number) => {

@@ -1,5 +1,4 @@
 import { env } from "process";
-import { Property } from "@/features/properties";
 import axios from "axios";
 import { propertyFactory } from "./factory";
 

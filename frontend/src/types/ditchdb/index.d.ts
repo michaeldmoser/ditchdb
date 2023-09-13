@@ -8,14 +8,7 @@ interface Billing {
     current_balance?: number | null;
 }
 
-interface Organization {
-    id?: number;
-    name: string;
-    phone?: string | null;
-    notes?: string | null;
-}
-
-interface Partyaddress {
+interface MailingAddress {
     id?: number;
     defaultaddress?: boolean;
     address1?: string | null;
@@ -28,7 +21,14 @@ interface Partyaddress {
     zip?: string | null;
 }
 
-interface Partyname {
+interface Organization {
+    id?: number;
+    name: string;
+    phone?: string | null;
+    notes?: string | null;
+}
+
+interface Owner {
     id?: number;
     defaultname?: boolean;
     fullname?: string | null;
@@ -36,7 +36,7 @@ interface Partyname {
     nametype_desc?: string | null;
 }
 
-interface People {
+interface Person {
     id?: number;
     name?: any;
     first_name?: string | null;
@@ -50,7 +50,7 @@ interface People {
 interface Property {
     id: number;
     geocode?: string | null;
-    address?: any;
+    address?: string | null;
     addr_city?: string | null;
     addr_state?: string | null;
     addr_zip?: string | null;

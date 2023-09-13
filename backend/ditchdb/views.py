@@ -29,13 +29,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
     def owners(self, request, pk=None):
         """Retrieve list of owners"""
         property = self.get_object()
-        owners = [
-            entity
-            for owner in property.owners.select_related("party").prefetch_related(
-                "party__names"
-            )
-            for entity in owner.party.names.all()
-        ]
+        owners = property.owners.all()
 
         return Response(OwnerSerializer(owners, many=True).data)
 
@@ -43,13 +37,8 @@ class PropertyViewSet(viewsets.ModelViewSet):
     def addresses(self, request, pk=None):
         """Retrieve a list of address for this property"""
         property = self.get_object()
-        addresses = [
-            address
-            for owner in property.owners.select_related("party").prefetch_related(
-                "party__addresses"
-            )
-            for address in owner.party.addresses.all()
-        ]
+        addresses = property.addresses.all()
+
         return Response(MailingAddressSerializer(addresses, many=True).data)
 
     @action(detail=True)

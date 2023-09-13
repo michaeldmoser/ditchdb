@@ -1,4 +1,3 @@
-import { Property } from "@/features/properties";
 import { faker } from "@faker-js/faker";
 
 export function propertyFactory(props?: Property): Property {
@@ -6,33 +5,10 @@ export function propertyFactory(props?: Property): Property {
 }
 
 const propertyIdFactory = autoIncrementingIdFactory(10000000);
-function propertyBaseFactory(): Property {
-  return {
+function propertyBaseFactory() {
+  const property: Property = {
     id: propertyIdFactory(),
     geocode: gecodeFactory(),
-    addr_number: faker.number.int({ min: 1, max: 99999 }).toString(),
-    addr_predirectional: faker.helpers.arrayElement(["N", "S", "E", "W"]),
-    addr_street: faker.location.street(),
-    addr_roadsuffix: faker.helpers.arrayElement([
-      "ST",
-      "AVE",
-      "BLVD",
-      "CT",
-      "DR",
-      "LN",
-      "RD",
-      "WAY",
-    ]),
-    addr_postdirectional: faker.helpers.arrayElement([
-      "N",
-      "S",
-      "E",
-      "W",
-      "NW",
-      "NE",
-      "SW",
-      "SE",
-    ]),
     addr_city: "Missoula",
     addr_state: "MT",
     addr_zip: faker.helpers.arrayElement([59801, 59804, 59808]).toString(),
@@ -58,7 +34,10 @@ function propertyBaseFactory(): Property {
     propcategory: null,
     propsubcategory: null,
     propsubcategory_desc: null,
+    address: faker.location.streetAddress(),
   };
+
+  return property;
 }
 
 /**

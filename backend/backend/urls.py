@@ -47,3 +47,10 @@ urlpatterns = [
     re_path(r"^$", render_react),
     re_path(r"^(?:.*)/?$", render_react),
 ]
+
+if settings.DEBUG and settings.DJANGO_DEV:
+    from ditchdb.dev_views import ResetDatabaseView
+
+    urlpatterns = [
+        path("dev/reset-database", ResetDatabaseView.as_view(), name="reset-database")
+    ] + urlpatterns
