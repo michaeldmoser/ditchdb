@@ -20,7 +20,7 @@ install.playwright: install.python /tmp/playwright.installed
 	touch /tmp/playwright.installed
 
 frontend.models: frontend/src/types/ditchdb/index.d.ts
-frontend/src/types/ditchdb/index.d.ts: backend/ditchdb/models.py
+frontend/src/types/ditchdb/index.d.ts: backend/ditchdb/serializers.py
 	cd backend && python ./manage.py generate_ts --all -t -o ../frontend/src/types/
 	cd frontend/src/types/ditchdb && sed -e 's/^export //' index.ts > index.d.ts
 	rm frontend/src/types/ditchdb/index.ts
