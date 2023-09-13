@@ -53,7 +53,7 @@ case $1 in
         ;;
 
     *)
-        docker_exec_dev make $1
+        docker_exec_dev "make $1"
         ;;
 esac
 
