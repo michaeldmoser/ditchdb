@@ -1,8 +1,10 @@
 #!/bin/zsh
 
-source ${0:a:h}/setup-dev-shell
+PROJECT_ROOT_DIR=`dirname ${0:a:h}`
+if ! [ `pwd` = "$PROJECT_ROOT_DIR" ]; then 
+    pushd $PROJECT_ROOT_DIR
+fi
 
-ensure_in_project_root
 
 full_reset() {
         source ./.env
