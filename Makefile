@@ -51,7 +51,7 @@ test.full: test.e2e
 
 .PHONY: test.e2e
 test.e2e: install.playwright 
-	pytest testing/e2e
+	cd backend && pytest ../testing/e2e
 
 .PHONY: test.fe 
 test.fe: setup-frontend frontend/src/testing/.env

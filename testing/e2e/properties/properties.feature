@@ -5,4 +5,3 @@ Feature: Listing properties in the database
     Given properties are populated in the database 
     When a user navigates to the properties screen
     Then the user should see a list of properties
-    And each property should display the street address and size in acres
