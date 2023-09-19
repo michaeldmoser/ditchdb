@@ -27,6 +27,9 @@ wrapt = "^1.15.0"
 psycopg = "^3.1.9"
 djangorestframework = "^3.14.0"
 urllib3 = "<=2.0"
+pytest-factoryboy = "^2.5.1"
+factory-boy = "^3.3.0"
+faker = "^19.6.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest-bdd = "^6.1.1"
