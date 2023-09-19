@@ -2,10 +2,11 @@ from factory.django import DjangoModelFactory
 from factory import Factory, LazyFunction, Sequence
 from faker import Faker
 
-from ditchdb.models import Property
+from ditchdb.models import Property, MailingAddress
 
 
 fake = Faker()
+Faker.seed(132091)
 
 
 def geocode():
@@ -63,3 +64,10 @@ class PropertyFactory(DjangoModelFactory):
     propsubcategory = None
     propsubcategory_desc = None
     address = LazyFunction(lambda: fake.street_address())
+
+
+class MailingAddressFactory(DjangoModelFactory):
+    class Meta:
+        model = MailingAddress
+
+    defaultaddress = True
