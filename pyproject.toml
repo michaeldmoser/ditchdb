@@ -30,6 +30,7 @@ urllib3 = "<=2.0"
 pytest-factoryboy = "^2.5.1"
 factory-boy = "^3.3.0"
 faker = "^19.6.1"
+playwright = "1.38.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest-bdd = "^6.1.1"
