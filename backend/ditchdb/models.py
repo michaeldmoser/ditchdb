@@ -75,6 +75,10 @@ class Property(models.Model):
     propsubcategory_desc = models.CharField(max_length=60, blank=True, null=True)
     lastupdated = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        """Unicode representation of Property."""
+        return self.address
+
     class Meta:
         """Model metadata."""
 
@@ -107,6 +111,10 @@ class MailingAddress(models.Model):
     zip = models.CharField(max_length=50, blank=True, null=True)
 
     party_id = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        """Unicode representation of MailingAddress."""
+        return f"{self.address1 or ''} {self.address2 or ''} {self.address3 or ''}, {self.city}, {self.state} {self.zip}"
 
     class Meta:
         """Model metadata."""
@@ -141,6 +149,9 @@ class Owner(models.Model):
     nametype_desc = models.CharField(max_length=60, blank=True, null=True)
     primaryowner = models.BooleanField(blank=False, null=False, default=False)
 
+    def __str__(self):
+        return self.fullname
+
     class Meta:
         """Model metadata."""
 
@@ -163,15 +174,21 @@ class Person(models.Model):
     alternate_phone = models.CharField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
-    owns = models.ManyToManyField(
-        Property,
-        related_name="people",
+    owner = models.OneToOneField(
+        Owner,
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
     )
 
     @property
     def name(self):
         """Return the contact's name."""
         return "{} {}".format(self.first_name, self.last_name)
+
+    def __str__(self):
+        """Unicode representation of People."""
+        return self.name
 
     class Meta:
         """Model metadata."""
@@ -187,10 +204,16 @@ class Organization(models.Model):
     phone = models.CharField(max_length=20, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
-    owns = models.ManyToManyField(
-        Property,
-        related_name="organizations",
+    owner = models.OneToOneField(
+        Owner,
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
     )
+
+    def __str__(self):
+        """Unicode representation of Organizations."""
+        return self.name
 
     class Meta:
         """Model metadata."""
