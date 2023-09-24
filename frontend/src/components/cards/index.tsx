@@ -21,12 +21,15 @@ export function Card({ children }: CardProps) {
  * CardHeader component
  * Render the header section of a card
  */
-export function CardHeader({ children }: HTMLProps<HTMLElement>) {
+export function CardHeader({ children, ...props }: HTMLProps<HTMLElement>) {
   const headerContent = typeof children === "string"
     ? <Heading>{children}</Heading>
     : children;
   return (
-    <header className="bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700">
+    <header
+      className="bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700"
+      {...props}
+    >
       {headerContent}
     </header>
   );

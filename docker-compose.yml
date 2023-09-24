@@ -15,7 +15,7 @@ services:
     environment:
       DJANGO_DEV: true # DO NOT SET THIS IN PRODUCTION
       DEV_CONTAINER: true
-      PYTHONPATH: /workspace/backend
+      PYTHONPATH: /workspace/backend:/workspace/testing
         
     ports:
       - '5173:5173'

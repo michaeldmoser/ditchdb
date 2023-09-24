@@ -67,7 +67,7 @@ function PropertyDetailHeader(
 /**
  * Display the proerty detail card
  */
-function PropertyDetailsSection(
+export function PropertyDetailsSection(
   {
     totmarket_acres,
     geocode,
@@ -81,12 +81,14 @@ function PropertyDetailsSection(
       </CardHeader>
       <CardBody>
         <dl className="grid grid-cols-2 gap-2">
-          <dt>Acres</dt>
-          <dd>{totmarket_acres?.toFixed(2)}</dd>
-          <dt>Geocode</dt>
-          <dd>{geocode}</dd>
-          <dt>Property Type</dt>
-          <dd>{proptype}</dd>
+          <dt id="term-acres">Acres</dt>
+          <dd aria-labelledby="term-acres">
+            {totmarket_acres?.toFixed(2)}
+          </dd>
+          <dt id="term-geocode">Geocode</dt>
+          <dd aria-labelledby="term-geocode">{geocode}</dd>
+          <dt id="term-property-type">Property Type</dt>
+          <dd aria-labelledby="term-property-type">{proptype}</dd>
         </dl>
       </CardBody>
     </Card>
@@ -100,19 +102,20 @@ function PropertyOwnersSection(
   { id }: IdProps,
 ) {
   const queryResult = useGetPropertyOwnersQuery(id);
+  const propertyOwnersId = useId();
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader id={propertyOwnersId}>
         Property Owners
       </CardHeader>
       <CardBody>
-        <ul>
+        <ul aria-labelledby={propertyOwnersId}>
           <ContentLoading<Owner[]> {...queryResult}>
             {(data) => (
               <>
                 {data.map((owner, key) => (
-                  <li key={key} className="text-error">
+                  <li key={key}>
                     {owner.fullname}
                   </li>
                 ))}
@@ -176,16 +179,21 @@ function AddresSection(
   { id }: IdProps,
 ) {
   const queryResult = useGetPropertyAddressesQuery(id);
+  const addressLabelId = useId();
 
   return (
     <Card>
-      <CardHeader>Addresses</CardHeader>
+      <CardHeader id={addressLabelId}>Addresses</CardHeader>
       <CardBody>
         <ContentLoading<MailingAddress[]> {...queryResult}>
           {(data) => (
-            <ul className="grid grid-cols-2 gap-2">
+            <ul
+              className="grid grid-cols-2 gap-2"
+              aria-labelledby={addressLabelId}
+            >
               {data.map((address, key: number) => {
                 const addressProps = {
+                  addressTo: address.address2 && address.address1,
                   streetAddress: address.address3 || address.address2 ||
                     address.address1,
                   city: address.city ?? "",
