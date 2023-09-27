@@ -1,5 +1,7 @@
-import React, { Children, HTMLProps, ReactElement } from "react";
+import React, { HTMLProps, ReactElement, useContext, useId } from "react";
 import { findChild } from "@/utils/children";
+
+const CardContext = React.createContext({});
 
 /**
  * Card component
@@ -8,12 +10,18 @@ import { findChild } from "@/utils/children";
 export function Card({ children }: CardProps) {
   const header = findChild(children, CardHeader);
   const body = findChild(children, CardBody);
+  const cardId = useId();
 
   return (
-    <div className="flex flex-col my-4 bg-white shadow-md  dark:shadow-sm rounded-xl dark:bg-gray-800 dark:shadow-slate-700">
-      {header}
-      {body}
-    </div>
+    <CardContext.Provider value={{ id: cardId }}>
+      <section
+        aria-labelledby={cardId}
+        className="flex flex-col my-4 bg-white shadow-md  dark:shadow-sm rounded-xl dark:bg-gray-800 dark:shadow-slate-700"
+      >
+        {header}
+        {body}
+      </section>
+    </CardContext.Provider>
   );
 }
 
@@ -25,6 +33,7 @@ export function CardHeader({ children, ...props }: HTMLProps<HTMLElement>) {
   const headerContent = typeof children === "string"
     ? <Heading>{children}</Heading>
     : children;
+
   return (
     <header
       className="bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700"
@@ -51,8 +60,13 @@ export function CardBody({ children }: HTMLProps<HTMLElement>) {
  */
 export function Heading({ children, level = 3 }: CardHeadingProps) {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  const cardContext = useContext(CardContext);
+
   return (
-    <Tag className="text-lg font-bold text-gray-800 dark:text-white">
+    <Tag
+      id={cardContext.id}
+      className="text-lg font-bold text-gray-800 dark:text-white"
+    >
       {children}
     </Tag>
   );
