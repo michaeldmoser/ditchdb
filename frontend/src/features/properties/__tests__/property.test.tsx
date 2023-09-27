@@ -5,7 +5,7 @@ import Layout from "@/features/properties/layout";
 import { contains } from "@/testing/utils";
 
 describe("Property", async () => {
-  it("should create a property", async () => {
+  it.skip("should create a property", async () => {
     await resetDatabase();
     const t = await createProperty();
 

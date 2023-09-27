@@ -157,10 +157,15 @@ function BillingSection({ id }: IdProps) {
               <dl className="grid grid-cols-2 gap-2">
                 <dt>Yearly Assessment</dt>
                 <dd>${45}</dd>
-                <dt>Current Balance</dt>
-                <dd>${data.current_balance}</dd>
-                <dt>Billing Address</dt>
-                <dd className="grid grid-cols-2">
+                <dt id="billing_current_balance">Current Balance</dt>
+                <dd aria-labelledby="billing_current_balance">
+                  ${data.current_balance}
+                </dd>
+                <dt id="billing_address">Billing Address</dt>
+                <dd
+                  aria-labelledby="billing_address"
+                  className="grid grid-cols-2"
+                >
                   <Address {...address} />
                 </dd>
               </dl>

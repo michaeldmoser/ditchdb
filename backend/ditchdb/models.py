@@ -12,11 +12,8 @@ from django.contrib.contenttypes.models import ContentType
 class Billing(models.Model):
     """Tracking billing information details for a property or properties"""
 
-    address_to_line = models.CharField(blank=True, null=True)
-    attention_to_line = models.CharField(blank=True, null=True)
-
-    limit = models.Q(app_label="ditchdb", model="people") | models.Q(
-        app_label="ditchdb", model="organizations"
+    limit = models.Q(app_label="ditchdb", model="person") | models.Q(
+        app_label="ditchdb", model="organization"
     )
     content_type = models.ForeignKey(
         ContentType,
@@ -27,17 +24,19 @@ class Billing(models.Model):
     )
     object_id = models.PositiveIntegerField(blank=True, null=True)
     bill_to = GenericForeignKey("content_type", "object_id")
-    active = models.BooleanField(default=True)
 
+    active = models.BooleanField(default=True)
+    current_balance = models.DecimalField(
+        max_digits=21, decimal_places=6, blank=True, null=True
+    )
+
+    address_to_line = models.CharField(blank=True, null=True)
+    attention_to_line = models.CharField(blank=True, null=True)
     street_address = models.CharField(max_length=64, blank=True, null=True)
     country = models.CharField(max_length=20, blank=True, null=True)
     city = models.CharField(max_length=40, blank=True, null=True)
     state = models.CharField(max_length=2, blank=True, null=True)
     zip = models.CharField(max_length=50, blank=True, null=True)
-
-    current_balance = models.DecimalField(
-        max_digits=21, decimal_places=6, blank=True, null=True
-    )
 
     property = models.ForeignKey(
         "Property",

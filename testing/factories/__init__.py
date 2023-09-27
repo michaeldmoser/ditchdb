@@ -9,7 +9,7 @@ from factory import (
     Faker,
 )
 
-from ditchdb.models import Property, MailingAddress, Owner
+from ditchdb.models import Property, MailingAddress, Owner, Billing
 
 
 NAME_TYPES = {
@@ -159,3 +159,60 @@ class OwnerFactory(DjangoModelFactory):
         "random_element",
         elements=NAME_TYPES.keys(),
     )
+
+
+def fetch_propery_owner_name(billing):
+    """Retrieve the owner's name from the Property's owner record or return some random name if not available"""
+    if billing.property.owners.count() > 0:
+        return billing.property.owners.first().fullname
+    else:
+        return Faker._get_faker().name()
+
+
+def fetch_mailing_address_field(field, fallback_faker_provider):
+    """Retrieve the mailing address field from the Property's mailing address record or return some random value if not available"""
+
+    def lazy_attribute(billing):
+        if billing.property.addresses.count() > 0:
+            return getattr(billing.property.addresses.first(), field)
+        else:
+            return getattr(Faker._get_faker(), fallback_faker_provider)()
+
+    return lazy_attribute
+
+
+class BillingFactory(DjangoModelFactory):
+    class Meta:
+        model = Billing
+        skip_postgeneration_save = True
+
+    active = True
+
+    current_balance = Faker("pyfloat", min_value=0, max_value=1000, right_digits=2)
+    address_to_line = LazyAttribute(fetch_propery_owner_name)
+
+    attention_to_line = ""
+    street_address = LazyAttribute(
+        fetch_mailing_address_field("address2", "street_address")
+    )
+    country = ""
+    city = LazyAttribute(fetch_mailing_address_field("city", "city"))
+    state = LazyAttribute(fetch_mailing_address_field("state", "state_abbr"))
+    zip = LazyAttribute(fetch_mailing_address_field("zip", "zipcode"))
+
+
+class BillablePropertyFactory(PropertyFactory):
+    class Meta:
+        model = Property
+        skip_postgeneration_save = True
+
+    @post_generation
+    def billing(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for billing in extracted:
+                self.billing.add(billing)
+        else:
+            self.billing.add(BillingFactory(property=self))

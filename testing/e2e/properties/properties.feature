@@ -1,5 +1,5 @@
-Feature: Listing properties in the database
-    As a user I want to be able to view a list the properties in the system's database.
+Feature: Managing properties
+    As a user I want to be able to view and manage properties and their details.
 
     Scenario: List properties
         Given properties are populated in the database 
@@ -14,3 +14,11 @@ Feature: Listing properties in the database
         And the user should see the mailing addresses
         And the user should see the owners
         And the user should see options to setup billing
+
+    Scenario: View property details for a property with billing setup
+        Given a property with billing setup
+        When a user navigates to the property's screen
+        Then the user should see the property details
+        And the user should see the mailing addresses
+        And the user should see the owners
+        And the user should see billing details
