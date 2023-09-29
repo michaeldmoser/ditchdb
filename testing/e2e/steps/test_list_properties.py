@@ -10,7 +10,6 @@ import pytest
 import re
 
 from playwright.sync_api import expect, Page
-from ditchdb.models import Property
 from factories import PropertyFactory, BillablePropertyFactory
 
 

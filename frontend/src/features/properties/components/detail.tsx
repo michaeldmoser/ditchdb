@@ -2,7 +2,7 @@ import { useId } from "react";
 import { Address } from "@/components/address";
 
 import { Card, CardBody, CardHeader } from "@/components/cards";
-import NoBillingSetup from "./no-billing-setup";
+import BillingSection from "./BillingSection";
 
 import {
   useGetPropertyAddressesQuery,
@@ -35,7 +35,7 @@ export default function PropertyDetail() {
             <section>
               <PropertyDetailsSection {...data} />
               <PropertyOwnersSection id={id} />
-              <BillingSection id={id} />
+              <BillingSection propertyId={id} />
               <AddresSection id={id} />
             </section>
             <MiniMapSection />
@@ -129,56 +129,9 @@ function PropertyOwnersSection(
 }
 
 /**
- * BillingSection is a component that displays the billing information for a property.
- */
-function BillingSection({ id }: IdProps) {
-  const queryResult = useGetPropertyBillingQuery(id);
-
-  return (
-    <Card>
-      <CardHeader>
-        Billing
-      </CardHeader>
-      <CardBody>
-        <ContentLoading<Billing>
-          {...queryResult}
-          notFoundComponent={() => <NoBillingSetup propertyId={id} />}
-        >
-          {(data) => {
-            const address = {
-              addressTo: data.address_to_line,
-              attentionTo: data.attention_to_line,
-              streetAddress: data.street_address,
-              city: data.city ?? "",
-              state: data.state ?? "",
-              zip: data.zip,
-            };
-            return (
-              <dl className="grid grid-cols-2 gap-2">
-                <dt>Yearly Assessment</dt>
-                <dd>${45}</dd>
-                <dt id="billing_current_balance">Current Balance</dt>
-                <dd aria-labelledby="billing_current_balance">
-                  ${data.current_balance}
-                </dd>
-                <dt id="billing_address">Billing Address</dt>
-                <dd
-                  aria-labelledby="billing_address"
-                  className="grid grid-cols-2"
-                >
-                  <Address {...address} />
-                </dd>
-              </dl>
-            );
-          }}
-        </ContentLoading>
-      </CardBody>
-    </Card>
-  );
-}
-
-/**
  * AddresSection is a component that displays the addresses for a property.
+ *
+ * @param id - The property id
  */
 function AddresSection(
   { id }: IdProps,

@@ -65,7 +65,7 @@ export function useCreatePropertyBilling() {
         return axios.post(`/api/properties/${propertyId}/billing`, billing);
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["propertyBilling"] });
+        queryClient.invalidateQueries({ queryKey: ["billing"] });
       },
     },
   );

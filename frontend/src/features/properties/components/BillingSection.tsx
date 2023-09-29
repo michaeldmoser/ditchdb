@@ -8,19 +8,64 @@ import { InfoAlert } from "@/components/alerts";
 import { Button, OutlineButton } from "@/components/buttons";
 import XIcon from "@/components/icons/X";
 import { TextField } from "@/components/forms";
+import { Address } from "@/components/address";
+import { ContentLoading } from "@/components/loaders";
+import { Card, CardBody, CardHeader } from "@/components/cards";
 
-import { useCreatePropertyBilling } from "../api";
+import { useCreatePropertyBilling, useGetPropertyBillingQuery } from "../api";
 
-interface IFormInput {
-  address_to_line: string;
-  attention_to_line: string;
-  street_address: string;
-  city: string;
-  state: string;
-  zip: string;
+/**
+ * BillingSection is a component that displays the billing information for a property.
+ *
+ * @param id - The id the property
+ */
+export default function BillingSection({ propertyId }: { propertyId: number }) {
+  const queryResult = useGetPropertyBillingQuery(propertyId);
+
+  return (
+    <Card>
+      <CardHeader>
+        Billing
+      </CardHeader>
+      <CardBody>
+        <ContentLoading<Billing>
+          {...queryResult}
+          notFoundComponent={() => <NoBillingSetup propertyId={propertyId} />}
+        >
+          {(data) => {
+            const address = {
+              addressTo: data.address_to_line,
+              attentionTo: data.attention_to_line,
+              streetAddress: data.street_address,
+              city: data.city ?? "",
+              state: data.state ?? "",
+              zip: data.zip,
+            };
+            return (
+              <dl className="grid grid-cols-2 gap-2">
+                <dt>Yearly Assessment</dt>
+                <dd>${45}</dd>
+                <dt id="billing_current_balance">Current Balance</dt>
+                <dd aria-labelledby="billing_current_balance">
+                  ${data.current_balance?.toFixed(2)}
+                </dd>
+                <dt id="billing_address">Billing Address</dt>
+                <dd
+                  aria-labelledby="billing_address"
+                  className="grid grid-cols-2"
+                >
+                  <Address {...address} />
+                </dd>
+              </dl>
+            );
+          }}
+        </ContentLoading>
+      </CardBody>
+    </Card>
+  );
 }
 
-export default function NoBillingSetup({ propertyId }: { propertyId: number }) {
+function NoBillingSetup({ propertyId }: { propertyId: number }) {
   const { handleSubmit, register } = useForm<IFormInput>();
   const [open, setOpen] = useState(false);
   const { mutate } = useCreatePropertyBilling();
@@ -106,4 +151,16 @@ export default function NoBillingSetup({ propertyId }: { propertyId: number }) {
       </div>
     </InfoAlert>
   );
+}
+
+/**
+ * Interface for billing setup form
+ */
+interface IFormInput {
+  address_to_line: string;
+  attention_to_line: string;
+  street_address: string;
+  city: string;
+  state: string;
+  zip: string;
 }

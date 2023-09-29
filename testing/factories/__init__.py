@@ -163,20 +163,26 @@ class OwnerFactory(DjangoModelFactory):
 
 def fetch_propery_owner_name(billing):
     """Retrieve the owner's name from the Property's owner record or return some random name if not available"""
-    if billing.property.owners.count() > 0:
-        return billing.property.owners.first().fullname
-    else:
-        return Faker._get_faker().name()
+    try:
+        if billing.property.owners.count() > 0:
+            return billing.property.owners.first().fullname
+    except AttributeError:
+        pass  # supress errors and return a random name
+
+    return Faker._get_faker().name()
 
 
 def fetch_mailing_address_field(field, fallback_faker_provider):
     """Retrieve the mailing address field from the Property's mailing address record or return some random value if not available"""
 
     def lazy_attribute(billing):
-        if billing.property.addresses.count() > 0:
-            return getattr(billing.property.addresses.first(), field)
-        else:
-            return getattr(Faker._get_faker(), fallback_faker_provider)()
+        try:
+            if billing.property.addresses.count() > 0:
+                return getattr(billing.property.addresses.first(), field)
+        except AttributeError:
+            pass  # supress errors and return a random name
+
+        return getattr(Faker._get_faker(), fallback_faker_provider)()
 
     return lazy_attribute
 

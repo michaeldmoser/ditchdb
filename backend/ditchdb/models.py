@@ -27,7 +27,7 @@ class Billing(models.Model):
 
     active = models.BooleanField(default=True)
     current_balance = models.DecimalField(
-        max_digits=21, decimal_places=6, blank=True, null=True
+        max_digits=21, decimal_places=6, blank=False, null=False, default=0
     )
 
     address_to_line = models.CharField(blank=True, null=True)
