@@ -19,10 +19,13 @@ from django.urls import path, re_path, include
 from django.shortcuts import render
 from django.conf import settings
 
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 from rest_framework import routers
 from ditchdb.views import PropertyViewSet, PersonViewSet, OrganizationViewSet
 
 
+@ensure_csrf_cookie
 def render_react(request):
     """Render react index.html"""
     return render(request, "index.html")
