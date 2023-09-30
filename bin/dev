@@ -52,6 +52,10 @@ case $1 in
         docker compose exec -it dev zsh
         ;;
 
+    e2e.watch)
+        docker_exec_dev "cd backend && ptw ../ --pattern='*.py,*.js,*.jsx,*.ts,*.tsx' --ignore=node_modules --ignore=frontend/node_modules --ignore=frontend/build --ignore=frontend/dist --ignore=frontend/.next --ignore=frontend/.cache --ignore=frontend/.yarn --ignore=frontend/.git --ignore=frontend/.idea --ignore=frontend/.vscode --ignore=frontend/.DS_Store --ignore=frontend/.next --ignore=frontend/.next -n 8 --liveserver localhost:0 ../testing/e2e"
+        ;;
+
     *)
         docker_exec_dev "make $1"
         ;;
