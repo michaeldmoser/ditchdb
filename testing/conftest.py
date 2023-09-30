@@ -23,6 +23,17 @@ def reseed_random(faker_seed):
     factory.random.reseed_random(faker_seed)
 
 
+@pytest.fixture(scope="function", autouse=True)
+def set_default_playwright_timeout(context):
+    return context.set_default_timeout(5000)
+
+
 @pytest.fixture(scope="session")
-def viewport_size(page):
-    return page.set_viewport_size(width=1920, height=1080)
+def browser_context_args(browser_context_args):
+    return {
+        **browser_context_args,
+        "viewport": {
+            "width": 1920,
+            "height": 1080,
+        },
+    }
