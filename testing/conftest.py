@@ -21,3 +21,8 @@ def reseed_random(faker_seed):
     import factory.random
 
     factory.random.reseed_random(faker_seed)
+
+
+@pytest.fixture(scope="session")
+def viewport_size(page):
+    return page.set_viewport_size(width=1920, height=1080)

@@ -9,7 +9,7 @@ Feature: Billing setup on a property
         And the balance is $0.00
 
     Scenario: Enter billing information with a balance
-        Given a property without billing setup
+        Given a property without billing information
         When I enter the billing information
         And I enter a balance of 100
         Then the billing information is saved
@@ -17,15 +17,15 @@ Feature: Billing setup on a property
         And the balance is 100.00
 
     Scenario: Enter billing information selecting a bill to person
-        Given a property without billing setup
+        Given a property without billing information
         When I enter the billing information
         And I select a bill to contact
         Then the billing information is saved
-        And the billing information should be displayed;without
+        And the billing information should be displayed
         And the bill to contact is displayed
 
     Scenario: Enter billing information selecting a bill to organization
-        Given a property without billing setup
+        Given a property without billing information
         When I enter the billing information
         And I select a bill to organization
         Then the billing information is saved

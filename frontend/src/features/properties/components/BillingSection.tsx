@@ -71,7 +71,6 @@ function NoBillingSetup({ propertyId }: { propertyId: number }) {
   const { mutate } = useCreatePropertyBilling();
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     setOpen(false);
-    console.dir(data);
     mutate({ propertyId, ...data });
   };
 
@@ -89,10 +88,25 @@ function NoBillingSetup({ propertyId }: { propertyId: number }) {
               <Dialog.Content
                 asChild
                 className={cx(
-                  "data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-full w-full md:max-w-3xl md:mt-0 translate-x-[-50%] translate-y-[-50%]",
+                  "data-[state=open]:animate-contentShow",
+                  "fixed",
+                  "top-0",
+                  "left-0",
+                  "w-screen",
+                  "h-screen",
+                  "max-w-full",
+                  "md:max-w-3xl",
+                  "md:top-[50%]",
+                  "md:left-[50%]",
+                  "md:max-h-[85vh]",
+                  "md:w-[90vw]",
+                  "md:mt-0",
+                  "md:translate-x-[-50%]",
+                  "md:translate-y-[-50%]",
+                  "lg:h-max",
                 )}
               >
-                <div className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
+                <div className="grid grid-cols-1 grid-rows-[fit-content(100%)_auto_fit-content(100%)] bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
                   <Dialog.Title asChild>
                     <div className="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
                       <h3 className="font-bold text-gray-800 dark:text-white">
@@ -109,7 +123,7 @@ function NoBillingSetup({ propertyId }: { propertyId: number }) {
                       </Dialog.Close>
                     </div>
                   </Dialog.Title>
-                  <form onSubmit={handleSubmit(onSubmit)}>
+                  <form onSubmit={handleSubmit(onSubmit)} className="contents">
                     <div className="p-4 overflow-y-auto">
                       <TextField
                         label="Billing To"
@@ -134,6 +148,10 @@ function NoBillingSetup({ propertyId }: { propertyId: number }) {
                       <TextField
                         label="Zip"
                         {...register("zip")}
+                      />
+                      <TextField
+                        label="Current Balance"
+                        {...register("current_balance", { value: 0 })}
                       />
                     </div>
                     <div className="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700">
@@ -163,4 +181,5 @@ interface IFormInput {
   city: string;
   state: string;
   zip: string;
+  current_balance: number;
 }
