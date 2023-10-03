@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/react";
 
 import "../frontend/src/index.css";
+import "@/testing/chai";
 
 const preview: Preview = {
   parameters: {
