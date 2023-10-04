@@ -50,8 +50,8 @@ frontend/dist:
 test.full: test.e2e
 
 .PHONY: test.e2e
-test.e2e: install.playwright 
-	cd backend && pytest ../testing/e2e
+test.e2e: install.playwright
+	cd backend && ptw ../ --pattern='*.py,*.js,*.jsx,*.ts,*.tsx' --ignore=node_modules --ignore=frontend/node_modules --ignore=frontend/build --ignore=frontend/dist --ignore=frontend/.next --ignore=frontend/.cache --ignore=frontend/.yarn --ignore=frontend/.git --ignore=frontend/.idea --ignore=frontend/.vscode --ignore=frontend/.DS_Store --ignore=frontend/.next --ignore=frontend/.next ../testing/e2e
 
 .PHONY: test.fe 
 test.fe: setup-frontend frontend/src/testing/.env
@@ -59,7 +59,11 @@ test.fe: setup-frontend frontend/src/testing/.env
 
 .PHONY: test.be
 test.be: install.python
-	cd backend && python ./manage.py test
+	cd backend && ptw --pattern='*.py,*.js,*.jsx,*.ts,*.tsx' --ignore=node_modules --ignore=frontend/node_modules --ignore=frontend/build --ignore=frontend/dist --ignore=frontend/.next --ignore=frontend/.cache --ignore=frontend/.yarn --ignore=frontend/.git --ignore=frontend/.idea --ignore=frontend/.vscode --ignore=frontend/.DS_Store --ignore=frontend/.next --ignore=frontend/.next ./
+
+.PHONY: test.storybook
+test.storybook: setup-frontend
+	npm run test-storybook
 
 .PHONY: clean
 clean:
