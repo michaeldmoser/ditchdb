@@ -22,8 +22,41 @@ from ditchdb.models import (
     MailingAddress,
     OrionPartyaddr,
     Owner,
-    MailingAddress,
-)  # noqa E402
+)
+
+
+def add_owner(party, name):
+    """Create and save the owner object"""
+    owner = Owner.objects.create(
+        defaultname=name.defaultname,
+        fullname=name.fullname,
+        nametype=name.nametype,
+        nametype_desc=name.nametype_desc,
+        party_id=party.id,
+    )
+
+    return owner
+
+
+def add_mailing_address(party, owners, address):
+    """Create the mailing address object with the owners"""
+    mailing_address = MailingAddress.objects.create(
+        defaultaddress=address.defaultaddress,
+        address1=address.address1,
+        address2=address.address2,
+        address3=address.address3,
+        country=address.country,
+        postalcode=address.postalcode,
+        city=address.city,
+        state=address.state,
+        zip=address.zip,
+        party_id=party.id,
+    )
+
+    mailing_address.owners.add(*owners)
+
+    return mailing_address
+
 
 # Create all new parties
 new_parties = (
@@ -33,28 +66,10 @@ new_parties = (
 )
 for new_party in new_parties:
     with transaction.atomic():
-        for name in new_party.names.all():
-            Owner.objects.create(
-                defaultname=name.defaultname,
-                fullname=name.fullname,
-                nametype=name.nametype,
-                nametype_desc=name.nametype_desc,
-                party_id=new_party.id,
-            )
+        owners = [add_owner(new_party, name) for name in new_party.names.all()]
 
         for address in new_party.addresses.all():
-            MailingAddress.objects.create(
-                defaultaddress=address.defaultaddress,
-                address1=address.address1,
-                address2=address.address2,
-                address3=address.address3,
-                country=address.country,
-                postalcode=address.postalcode,
-                city=address.city,
-                state=address.state,
-                zip=address.zip,
-                party_id=new_party.id,
-            )
+            add_mailing_address(new_party, owners, address)
 
 # Find all new properties
 parcels = OrionProperty.objects.get_new_properties_queryset()
