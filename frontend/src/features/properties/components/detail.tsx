@@ -14,10 +14,7 @@ import {
 import { usePropertyId } from "../hooks";
 import { ContentLoading } from "@/components/loaders";
 
-type IdProps = {
-  id: number;
-};
-
+type IdProps = Pick<Property, "id">;
 /**
  * Property dpetail page
  */
@@ -47,13 +44,20 @@ export default function PropertyDetail() {
 }
 
 /**
+ * Property is the data type for the property detail page
+ * @property address - The address of the property
+ */
+type PropertyDetailHeaderProps = Pick<Property, "address"> & {
+  labelId: string;
+};
+/**
  * Header for Property Detail page
  */
 function PropertyDetailHeader(
   {
     labelId,
     address,
-  }: Property & { labelId: string },
+  }: PropertyDetailHeaderProps,
 ) {
   return (
     <header className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -64,6 +68,10 @@ function PropertyDetailHeader(
   );
 }
 
+type PropertyDetailsProps = Pick<
+  Property,
+  "totmarket_acres" | "geocode" | "proptype"
+>;
 /**
  * Display the proerty detail card
  */
@@ -72,7 +80,7 @@ export function PropertyDetailsSection(
     totmarket_acres,
     geocode,
     proptype,
-  }: Property,
+  }: PropertyDetailsProps,
 ) {
   return (
     <Card>
