@@ -65,6 +65,14 @@ class PropertyViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+    @action(detail=True)
+    def billto(self, request, pk=None):
+        """Retrieve the list of contact details usable for billing"""
+        property = self.get_object()
+        billto = property.people.all()
+
+        return Response(PersonSerializer(billto, many=True).data)
+
 
 class PersonViewSet(viewsets.ModelViewSet):
     """API endpoint that allows people to be viewed or edited."""

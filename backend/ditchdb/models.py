@@ -12,19 +12,6 @@ from django.contrib.contenttypes.models import ContentType
 class Billing(models.Model):
     """Tracking billing information details for a property or properties"""
 
-    limit = models.Q(app_label="ditchdb", model="person") | models.Q(
-        app_label="ditchdb", model="organization"
-    )
-    content_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-        limit_choices_to=limit,
-        null=True,
-        blank=True,
-    )
-    object_id = models.PositiveIntegerField(blank=True, null=True)
-    bill_to = GenericForeignKey("content_type", "object_id")
-
     active = models.BooleanField(default=True)
     current_balance = models.DecimalField(
         max_digits=21, decimal_places=6, blank=False, null=False, default=0
@@ -46,6 +33,25 @@ class Billing(models.Model):
         null=True,
         db_constraint=False,
     )
+
+    person = models.ForeignKey(
+        "Person", on_delete=models.CASCADE, null=True, blank=True
+    )
+    organization = models.ForeignKey(
+        "Organization", on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(person__isnull=False, organization__isnull=True)
+                    | models.Q(person__isnull=True, organization__isnull=False)
+                    | models.Q(person__isnull=True, organization__isnull=True)
+                ),
+                name="either_person_or_organization_or_neither",
+            )
+        ]
 
 
 class Property(models.Model):
@@ -148,6 +154,11 @@ class Owner(models.Model):
     nametype_desc = models.CharField(max_length=60, blank=True, null=True)
     primaryowner = models.BooleanField(blank=False, null=False, default=False)
 
+    @property
+    def name(self):  # Include name for compatibility with Person and Organization
+        """The name property."""
+        return self.fullname
+
     def __str__(self):
         return self.fullname
 
@@ -165,11 +176,11 @@ class Owner(models.Model):
 
 class Person(models.Model):
     """Model definition for People."""
-
+ 
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
     email = models.CharField(max_length=320, blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    phone = models.CharField(blank=True, null=True)
     alternate_phone = models.CharField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
@@ -180,8 +191,13 @@ class Person(models.Model):
         null=True,
     )
 
+    properties = models.ManyToManyField(
+        Property,
+        related_name="people",
+    )
+
     @property
-    def name(self):
+    def name(self):  # Include name for compatibility with Owner and Organization
         """Return the contact's name."""
         return "{} {}".format(self.first_name, self.last_name)
 
@@ -199,7 +215,10 @@ class Person(models.Model):
 class Organization(models.Model):
     """Model definition for Organizations."""
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255
+    )  # Use name for compatibility with Owner and Person
+
     phone = models.CharField(max_length=20, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
