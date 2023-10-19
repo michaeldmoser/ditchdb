@@ -24,6 +24,16 @@ class PersonThroughInline(admin.StackedInline):
     extra = 0
 
 
+class PropertyOwnerInline(admin.StackedInline):
+    model = Owner.properties.through
+    extra = 0
+
+
+class PropertyMailingAddressesInline(admin.StackedInline):
+    model = MailingAddress.properties.through
+    extra = 0
+
+
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
     list_display = [
@@ -34,7 +44,12 @@ class PropertyAdmin(admin.ModelAdmin):
 
     search_fields = ["id", "address", "addr_number", "addr_street", "addr_roadsuffix"]
 
-    inlines = [BillingInline, PersonThroughInline]
+    inlines = [
+        BillingInline,
+        PersonThroughInline,
+        PropertyOwnerInline,
+        PropertyMailingAddressesInline,
+    ]
 
 
 @admin.register(Billing)
