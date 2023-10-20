@@ -40,15 +40,15 @@ class OptionalTrailingSlash(routers.DefaultRouter):
 
 
 router = OptionalTrailingSlash()
-router.register(r"properties", PropertyViewSet)
+router.register(r"properties", PropertyViewSet, basename="property")
 router.register(r"people", PersonViewSet)
 router.register(r"organizations", OrganizationViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    re_path(r"^$", render_react),
-    re_path(r"^(?:.*)/?$", render_react),
+    # re_path(r"^$", render_react),
+    re_path(r"^app/(?:.*)/?$", render_react),
 ]
 
 if settings.DEBUG and settings.DJANGO_DEV:
