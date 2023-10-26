@@ -25,6 +25,9 @@ export default defineConfig({
     environment: "jsdom",
     passWithNoTests: false,
     setupFiles: "./src/testing/setup.ts",
+    include: [
+      "src/**/__tests__/*.{test,spec}.?(c|m)[jt]s?(x)",
+    ],
   },
   server: {
     host: "0.0.0.0",
