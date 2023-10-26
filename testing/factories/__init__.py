@@ -9,7 +9,14 @@ from factory import (
     Faker,
 )
 
-from ditchdb.models import Property, MailingAddress, Owner, Billing
+from ditchdb.models import (
+    Property,
+    MailingAddress,
+    Owner,
+    Billing,
+    Person,
+    Organization,
+)
 
 
 NAME_TYPES = {
@@ -98,18 +105,6 @@ class PropertyFactory(DjangoModelFactory):
     address = Faker("street_address")
 
     @post_generation
-    def addresses(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for address in extracted:
-                self.addresses.add(address)
-        else:
-            self.addresses.add(MailingAddressFactory())
-            self.addresses.add(MailingAddressFactory())
-
-    @post_generation
     def owners(self, create, extracted, **kwargs):
         if not create:
             return
@@ -118,8 +113,12 @@ class PropertyFactory(DjangoModelFactory):
             for owner in extracted:
                 self.owners.add(owner)
         else:
-            self.owners.add(OwnerFactory())
-            self.owners.add(OwnerFactory())
+            owner = OwnerFactory()
+            self.owners.add(owner)
+            for address in owner.addresses.all():
+                self.addresses.add(address)
+
+            self.people.add(owner.person)
 
 
 class MailingAddressFactory(DjangoModelFactory):
@@ -159,6 +158,36 @@ class OwnerFactory(DjangoModelFactory):
         "random_element",
         elements=NAME_TYPES.keys(),
     )
+
+    @post_generation
+    def person(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.person = extracted
+        else:
+            self.person = PersonFactory(owner=self)
+            self.person.properties.set(self.properties.all())
+
+    @post_generation
+    def addresses(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for address in extracted:
+                self.addresses.add(address)
+        else:
+            address1 = MailingAddressFactory(defaultaddress=True)
+            address1.properties.set(self.properties.all())
+            address1.save()
+            self.addresses.add(address1)
+
+            address2 = MailingAddressFactory(defaultaddress=False)
+            address2.properties.set(self.properties.all())
+            address2.save()
+            self.addresses.add(address2)
 
 
 def fetch_propery_owner_name(billing):
@@ -222,3 +251,16 @@ class BillablePropertyFactory(PropertyFactory):
                 self.billing.add(billing)
         else:
             self.billing.add(BillingFactory(property=self))
+
+
+class PersonFactory(DjangoModelFactory):
+    class Meta:
+        model = Person
+        skip_postgeneration_save = True
+
+    first_name = Faker("first_name")
+    last_name = Faker("last_name")
+    email = Faker("email")
+    phone = Faker("phone_number")
+    alternate_phone = Faker("phone_number")
+    notes = Faker("paragraph", nb_sentences=3, variable_nb_sentences=True)

@@ -13,4 +13,6 @@ declare global {
   }
 
   type DjangoError = AxiosError<DjangoErrorResponse>;
+
+  type PropertyIdProp = { propertyId: number };
 }

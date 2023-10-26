@@ -149,7 +149,7 @@ def _(page: Page, property):
     billingSection = page.get_by_role("region", name="Billing")
 
     expect(billingSection.get_by_label("Current Balance")).to_contain_text(
-        f"${billing.current_balance:.0f}"
+        f"${billing.current_balance:.2f}"
     )
     expect(billingSection.get_by_label("Billing Address")).to_contain_text(
         billing.address_to_line

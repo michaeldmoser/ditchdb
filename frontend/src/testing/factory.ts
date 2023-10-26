@@ -5,6 +5,7 @@ import {
   factory as mswFactory,
   manyOf,
   nullable,
+  oneOf,
   primaryKey,
 } from "@mswjs/data";
 
@@ -45,15 +46,62 @@ export const factory = mswFactory({
     address: () => faker.location.streetAddress(),
 
     people: manyOf("people"),
+    mailingaddress: manyOf("mailingaddress"),
+    owner: manyOf("owner"),
   },
   people: {
     id: primaryKey(() => faker.number.int({ min: 10000000, max: 99999999 })),
     first_name: faker.person.firstName,
     last_name: faker.person.lastName,
+    name: faker.person.fullName,
     email: faker.internet.email,
     phone: faker.phone.number,
+
+    owner: oneOf("owner"),
+  },
+  mailingaddress: {
+    id: primaryKey(() => faker.number.int({ min: 10000000, max: 99999999 })),
+    defaultaddress: () => true,
+    address1: () => faker.location.streetAddress(),
+    address2: nullable<string>(() => null),
+    address3: nullable<string>(() => null),
+    city: faker.location.city,
+    state: () => faker.location.state({ abbreviated: true }),
+    zip: faker.location.zipCode,
+
+    owners: manyOf("owner"),
+  },
+  owner: {
+    id: primaryKey(() => faker.number.int({ min: 10000000, max: 99999999 })),
+    defaultname: () => true,
+    fullname: () => faker.person.lastName() + " " + faker.person.firstName(),
+    nametype: nullable<number>(() => null),
+    nametype_desc: nullable<string>(() => null),
+    primaryowner: () => true,
+
+    addresses: manyOf("mailingaddress"),
+    person: oneOf("people"),
   },
 });
+
+export function createBasicProperty() {
+  const person = factory.people.create();
+  const mailingaddress = factory.mailingaddress.create();
+  const owner = factory.owner.create({
+    person: person,
+    addresses: [mailingaddress],
+  });
+
+  factory.people.update({ data: { owner }, ...whereById(person.id) });
+
+  const property = factory.properties.create({
+    people: [person],
+    mailingaddress: [mailingaddress],
+    owner: [owner],
+  });
+
+  return property;
+}
 
 export function propertyFactory(props?: Property): Property {
   return Object.assign({}, propertyBaseFactory(), props);
@@ -126,8 +174,8 @@ function autoIncrementingIdFactory(startingId = 1) {
  * @param  id ID of the record to fetch
  * @returns
  */
-function fetchById(this: FactoryReturn, id: number) {
-  return this.findFirst(whereById(id)); // tslint:disable-line
+function fetchById(this: FactoryReturn, id: string | number) {
+  return this.findFirst(whereById(id));
 }
 
 /**
@@ -155,9 +203,9 @@ Object.entries(factory).forEach((args) =>
   Object.assign(args[1], { createMany, fetchById })
 );
 
-export function whereById(id: number) {
+export function whereById(id: number | string) {
   return {
-    where: { id: { equals: id } },
+    where: { id: { equals: parseInt(id.toString(), 10) } },
   };
 }
 

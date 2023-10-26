@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { useId } from "@radix-ui/react-id";
 import {
   CheckIcon,
@@ -6,31 +6,18 @@ import {
   ChevronUpIcon,
 } from "@radix-ui/react-icons";
 import cx from "@/utils/cx";
-import {
-  Content,
-  Icon,
-  Item,
-  ItemIndicator,
-  ItemText,
-  Portal,
-  Root,
-  ScrollDownButton,
-  ScrollUpButton,
-  Trigger,
-  Value,
-  Viewport,
-} from "@radix-ui/react-select";
 
-export default function Select(
+const Select = forwardRef<HTMLSelectElement, SelectProps>((
   {
     label,
-    name,
-    placeholder,
     options = [],
     disabled = false,
     required = false,
+    placeholder = "Select an option…",
+    ...props
   }: SelectProps,
-) {
+  ref,
+) => {
   const labelledBy = useId();
   return (
     <div className="my-4">
@@ -48,119 +35,68 @@ export default function Select(
         {label}
         {required && " *"}
       </label>
-      <Root name={name} disabled={disabled} required={required}>
-        <Trigger
-          id={labelledBy}
-          className={cx(
-            "py-3",
-            "px-4",
-            "grid",
-            "grid-cols-2",
-            "items-center",
-            "text-left",
-            "gap-2",
-            "rounded-md",
-            "border",
-            "font-medium",
-            "bg-white",
-            "text-gray-700",
-            "shadow-sm",
-            "align-middle",
-            "hover:bg-gray-50",
-            "focus:outline-none",
-            "focus:ring-2",
-            "focus:ring-offset-2",
-            "focus:ring-offset-white",
-            "focus:ring-blue-600",
-            "transition-all",
-            "text-sm",
-            "dark:bg-slate-900",
-            "dark:hover:bg-slate-800",
-            "dark:border-gray-700",
-            "dark:text-gray-400",
-            "dark:hover:text-white",
-            "dark:focus:ring-offset-gray-800",
-            "w-full",
-            "disabled:cursor-not-allowed",
-            "disabled:opacity-50",
-            "disabled:dark:hover:bg-slate-900",
-            "disabled:dark:hover:text-gray-400",
-          )}
-        >
-          <Value placeholder={placeholder} />
-          <Icon
-            className={cx(
-              "text-white",
-              "dark:text-gray-400",
-              "grid",
-              "justify-end",
-            )}
-          >
-            <ChevronDownIcon />
-          </Icon>
-        </Trigger>
-        <Portal>
-          <Content
-            className={cx(
-              "w-72",
-              "hidden",
-              "z-10",
-              "mt-2",
-              "min-w-[15rem] bg-white",
-              "shadow-md",
-              "rounded-lg",
-              "p-2",
-              "dark:bg-gray-800",
-              "dark:border",
-              "dark:border-gray-700",
-              "dark:divide-gray-700",
-            )}
-          >
-            <ScrollUpButton
-              className={cx(
-                "flex",
-                "items-center",
-                "justify-center",
-                "h-[25px] bg-white",
-                "dark:bg-gray-800",
-                "text-violet11",
-                "cursor-default",
-              )}
-            >
-              <ChevronUpIcon />
-            </ScrollUpButton>
-            <Viewport className="p-[5px]">
-              {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </Viewport>
-            <ScrollDownButton
-              className={cx(
-                "flex",
-                "items-center",
-                "justify-center",
-                "h-[25px] bg-white",
-                "dark:bg-gray-800",
-                "text-violet11",
-                "cursor-default",
-              )}
-            >
-              <ChevronDownIcon />
-            </ScrollDownButton>
-          </Content>
-        </Portal>
-      </Root>
+      <select
+        id={labelledBy}
+        className={cx(
+          "py-3",
+          "px-4",
+          "grid",
+          "grid-cols-2",
+          "items-center",
+          "text-left",
+          "gap-2",
+          "rounded-md",
+          "border",
+          "font-medium",
+          "bg-white",
+          "text-gray-700",
+          "shadow-sm",
+          "align-middle",
+          "hover:bg-gray-50",
+          "focus:outline-none",
+          "focus:ring-2",
+          "focus:ring-offset-2",
+          "focus:ring-offset-white",
+          "focus:ring-blue-600",
+          "transition-all",
+          "text-sm",
+          "dark:bg-slate-900",
+          "dark:hover:bg-slate-800",
+          "dark:border-gray-700",
+          "dark:text-gray-400",
+          "dark:hover:text-white",
+          "dark:focus:ring-offset-gray-800",
+          "w-full",
+          "disabled:cursor-not-allowed",
+          "disabled:opacity-50",
+          "disabled:dark:hover:bg-slate-900",
+          "disabled:dark:hover:text-gray-400",
+        )}
+        {...props}
+        ref={ref}
+        defaultValue={""}
+        required={required}
+        disabled={disabled}
+      >
+        <option value="" disabled hidden>
+          {placeholder}
+        </option>
+        {options.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </select>
     </div>
   );
-}
+});
 
-const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
-  ({ children, className, ...props }: SelectItemProps, forwardedRef) => {
+const SelectItem = React.forwardRef<HTMLOptionElement, SelectItemProps>(
+  ({ children, className, value, ...props }: SelectItemProps, forwardedRef) => {
     return (
-      <Item
+      <option
         {...props}
+        value={value?.toString()}
         ref={forwardedRef}
         className={cx(
           "flex",
@@ -180,22 +116,19 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
           className,
         )}
       >
-        <ItemText>{children}</ItemText>
-        <ItemIndicator>
-          <CheckIcon />
-        </ItemIndicator>
-      </Item>
+        {children}
+      </option>
     );
   },
 );
 
-type SelectItemProps = React.ComponentProps<typeof Item> & {
-  value: string;
-};
+export default Select;
+
+type SelectItemProps = React.OptionHTMLAttributes<HTMLOptionElement>;
 
 type SelectProps = {
   label: string;
   name: string;
   placeholder: string;
-  options: { label: string; value: string }[];
+  options: { label: string; value: string | number }[];
 } & React.SelectHTMLAttributes<HTMLSelectElement>;

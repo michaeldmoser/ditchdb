@@ -117,6 +117,11 @@ class MailingAddress(models.Model):
 
     party_id = models.IntegerField(blank=True, null=True)
 
+    @property
+    def street_address(self):
+        """Return the street address as a single string."""
+        return self.address3 or self.address2 or self.address1 or ""
+
     def __str__(self):
         """Unicode representation of MailingAddress."""
         return f"{self.address1 or ''} {self.address2 or ''} {self.address3 or ''}, {self.city}, {self.state} {self.zip}"
@@ -176,7 +181,7 @@ class Owner(models.Model):
 
 class Person(models.Model):
     """Model definition for People."""
- 
+
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
     email = models.CharField(max_length=320, blank=True, null=True)
@@ -189,6 +194,7 @@ class Person(models.Model):
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True,
+        related_name="person",
     )
 
     properties = models.ManyToManyField(

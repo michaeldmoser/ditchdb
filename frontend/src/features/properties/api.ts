@@ -70,3 +70,24 @@ export function useCreatePropertyBilling() {
     },
   );
 }
+
+export function useGetBillingContactsQuery(propertyId: number) {
+  return useQuery<Person[], AxiosError>(
+    {
+      queryKey: ["billingContacts"],
+      queryFn: () =>
+        axios.get(`/api/properties/${propertyId}/billto`).then((res) => {
+          return res.data;
+        }),
+    },
+  );
+}
+
+export function useGetBillingContactDetailsQuery(id: number) {
+  return useQuery<Person, AxiosError>(
+    {
+      queryKey: ["billingContactDetails", id],
+      queryFn: () => axios.get(`/api/billto/${id}`).then((res) => res.data),
+    },
+  );
+}

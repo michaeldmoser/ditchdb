@@ -22,7 +22,12 @@ from django.conf import settings
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from rest_framework import routers
-from ditchdb.views import PropertyViewSet, PersonViewSet, OrganizationViewSet
+from ditchdb.views import (
+    PropertyViewSet,
+    PersonViewSet,
+    OrganizationViewSet,
+    BillToView,
+)
 
 
 @ensure_csrf_cookie
@@ -46,6 +51,7 @@ router.register(r"organizations", OrganizationViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/billto/<int:person_id>/", BillToView.as_view(), name="billto"),
     path("api/", include(router.urls)),
     # re_path(r"^$", render_react),
     re_path(r"^app/(?:.*)/?$", render_react),

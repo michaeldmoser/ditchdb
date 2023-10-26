@@ -98,6 +98,7 @@ class BillingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Billing
         fields = (
+            "id",
             "address_to_line",
             "attention_to_line",
             "street_address",

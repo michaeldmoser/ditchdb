@@ -1,5 +1,6 @@
 """REST API views for ditchdb app."""
-from rest_framework import viewsets, generics
+import logging
+from rest_framework import viewsets, generics, views
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .serializers import (
@@ -11,6 +12,8 @@ from .serializers import (
     BillingSerializer,
 )
 from .models import Property, Person, Organization, Billing
+
+logger = logging.getLogger(__name__)
 
 
 class PropertyViewSet(viewsets.ModelViewSet):
@@ -55,15 +58,18 @@ class PropertyViewSet(viewsets.ModelViewSet):
     def set_billing(self, request, pk=None):
         """Set the billing address for this property"""
         property = self.get_object()
+        person = self.get_bill_to_person(request)
+
         billing = property.billing.filter(active=True).first()
         if billing is None:
-            billing = Billing(property=property)
+            billing = Billing(property=property, person=person)
 
         serializer = BillingSerializer(billing, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
+
+        serializer.save()
+        return Response(serializer.data)
 
     @action(detail=True)
     def billto(self, request, pk=None):
@@ -72,6 +78,16 @@ class PropertyViewSet(viewsets.ModelViewSet):
         billto = property.people.all()
 
         return Response(PersonSerializer(billto, many=True).data)
+
+    def get_bill_to_person(self, request):
+        """Retrieve the person from the bill_to"""
+        bill_to_id = request.data.get("bill_to")
+        if bill_to_id is not None and bill_to_id != "":
+            person = Person.objects.get(id=bill_to_id)
+        else:
+            person = None
+
+        return person
 
 
 class PersonViewSet(viewsets.ModelViewSet):
@@ -101,3 +117,22 @@ class OwnerListView(generics.ListAPIView):
     def get_queryset(self):
         property_id = self.kwargs["property_id"]
         return PropertyOwner.objects.filter(property_id=property_id)
+
+
+class BillToView(generics.RetrieveAPIView):
+    """Collects the bill to data that can be inserted into the Setup Billing form when creating a billing record"""
+
+    def get(self, request, person_id):
+        person = Person.objects.get(id=person_id)
+        address = person.owner.addresses.filter(defaultaddress=True).first()
+
+        data = {
+            "address_to_line": person.name,
+            "attention_to_line": "",
+            "street_address": address.street_address,
+            "city": address.city,
+            "state": address.state,
+            "zip": address.zip,
+        }
+
+        return Response(data)

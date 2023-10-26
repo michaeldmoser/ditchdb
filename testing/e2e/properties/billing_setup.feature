@@ -19,10 +19,9 @@ Feature: Billing setup on a property
     Scenario: Enter billing information selecting a bill to person
         Given a property without billing information
         When I enter the billing information
-        And I select a bill to contact
+        And I select a bill to person
         Then the billing information is saved
-        And the billing information should be displayed
-        And the bill to contact is displayed
+        And the bill to contact information is displayed
 
     Scenario: Enter billing information selecting a bill to organization
         Given a property without billing information
