@@ -59,7 +59,7 @@ test.fe: setup-frontend frontend/src/testing/.env
 
 .PHONY: test.be
 test.be: install.python
-	cd backend && ptw --pattern='*.py,*.js,*.jsx,*.ts,*.tsx' --ignore=node_modules --ignore=frontend/node_modules --ignore=frontend/build --ignore=frontend/dist --ignore=frontend/.next --ignore=frontend/.cache --ignore=frontend/.yarn --ignore=frontend/.git --ignore=frontend/.idea --ignore=frontend/.vscode --ignore=frontend/.DS_Store --ignore=frontend/.next --ignore=frontend/.next ./
+	cd backend && ptw --pattern='*.py' --ignore=node_modules --ignore=frontend/node_modules --ignore=frontend/build --ignore=frontend/dist --ignore=frontend/.next --ignore=frontend/.cache --ignore=frontend/.yarn --ignore=frontend/.git --ignore=frontend/.idea --ignore=frontend/.vscode --ignore=frontend/.DS_Store --ignore=frontend/.next --ignore=frontend/.next ./
 
 .PHONY: test.storybook
 test.storybook: setup-frontend
